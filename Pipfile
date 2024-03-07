@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 customtkinter = "*"
 pytube = "*"
+image = "*"
+pygetwindow = "*"
 
 [dev-packages]
 

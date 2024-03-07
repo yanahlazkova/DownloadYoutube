@@ -1,7 +1,9 @@
 import tkinter as tk
-import customtkinter, re, windowMessage
+import customtkinter, re, windowMessage, io
 import listUrls
 import downloadFile
+from PIL import Image, ImageTk
+import urllib.request
 
 
 # from customtkinter.windows.widgets.core_widget_classes.ctk_base_class import CTkImage
@@ -23,6 +25,7 @@ class DownloadYoutube:
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
         self.app.columnconfigure(1, weight=1)
 
+        self.button_Clear = customtkinter.CTkButton(self.app, text="X", width=10, command=self.clear_data)
         self.button_OK = customtkinter.CTkButton(
             self.app, text="OK", width=10,
             command=lambda: self.show_data_video #(self.input_link.get())
@@ -63,7 +66,9 @@ class DownloadYoutube:
 
         self.input_link.grid(row=0, column=1, padx=10, sticky="ew", columnspan=2)
 
-        self.button_OK.grid(row=0, column=3, padx=10, sticky="e")
+        self.button_Clear.grid(row=0, column=3 )
+
+        self.button_OK.grid(row=0, column=4, padx=10, sticky="e")
 
         self.text_title.grid(row=1, column=0, padx=10, sticky="e")
 
@@ -93,6 +98,14 @@ class DownloadYoutube:
         y = (screen_height - self.app_height) // 2
 
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
+
+    def clear_data(self):
+        self.input_link.set("Enter video link")
+        self.show_video_title("")
+        self.show_video_author("")
+        self.video_image.configure(image=None)
+        
+
     @staticmethod
     def is_youtube_url(url_video):
         # Регулярное выражение для проверки ссылок YouTube
@@ -109,6 +122,27 @@ class DownloadYoutube:
         # Возвращаем True, если строка соответствует формату ссылки YouTube, и False в противном случае
         return match is not None
 
+    def show_video_title(self, title):
+        self.video_name.configure(state="normal")
+
+        self.video_name.delete("1.0", tk.END)
+        self.video_name.insert("1.0", title)
+
+        self.video_name.configure(state="disabled")
+
+    def show_video_author(self, author):
+        self.video_author.configure(text=author)
+
+    def show_video_image(self, image):
+        self.video_image.configure(image=None)
+        response = urllib.request.urlopen(image)
+        image_data = response.read()
+        image = Image.open(io.BytesIO(image_data))
+        image.thumbnail((250, 250))
+        # image = image.resize((100))
+        photo_image = ImageTk.PhotoImage(image)
+
+        self.video_image.configure(image=photo_image)
 
     def show_data_video(self):
         value = self.input_link.get()
@@ -117,6 +151,10 @@ class DownloadYoutube:
             video_downloaded = downloadFile.Download(value)
             data_video = video_downloaded.show_data_video()
             print("data_video", [data_video])
+            self.show_video_title(data_video["title"])
+            self.show_video_author(data_video["author"])
+            self.show_video_image(data_video["image"])
+
         else:
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")
 
