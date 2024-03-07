@@ -104,6 +104,7 @@ class DownloadYoutube:
         self.show_video_title("")
         self.show_video_author("")
         self.video_image.configure(image=None)
+        self.button_download_isdisable("disable")
         
 
     @staticmethod
@@ -130,8 +131,10 @@ class DownloadYoutube:
 
         self.video_name.configure(state="disabled")
 
+
     def show_video_author(self, author):
         self.video_author.configure(text=author)
+
 
     def show_video_image(self, image):
         self.video_image.configure(image=None)
@@ -144,6 +147,9 @@ class DownloadYoutube:
 
         self.video_image.configure(image=photo_image)
 
+    def button_download_isdisable(self, state_button):
+        self.button_download.configure(state=state_button)
+
     def show_data_video(self):
         value = self.input_link.get()
         print("Selected value:", value)
@@ -154,6 +160,7 @@ class DownloadYoutube:
             self.show_video_title(data_video["title"])
             self.show_video_author(data_video["author"])
             self.show_video_image(data_video["image"])
+            self.button_download_isdisable("normal")
 
         else:
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")

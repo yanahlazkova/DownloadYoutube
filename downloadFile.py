@@ -20,11 +20,10 @@ class Download:
             author = self.yt.author
             image = self.yt.thumbnail_url
             video_data = {"title": title, "author": author, "image": image}
-            # print("Title: ", self.yt.title)
-            # print("Video: ", self.yt.views)
-            # print("Url miniature: ", self.yt.thumbnail_url)
-            # print("Author: ", self.yt.author)
+
             return video_data
         except:
             windowMessage.open_window_error("YouTube link is invalid")
 
+    def download_video(self):
+        self.yt.streams.get_highest_resolution().download("videos")
