@@ -80,6 +80,8 @@ class DownloadYoutube:
             cursor="hand2"
         )
 
+        self.set_themes = customtkinter.CTkRadioButton(self.app, text=self.theme[0])
+
     def create_widgets(self):
         self.text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
 
