@@ -8,9 +8,9 @@ class Download:
     url_video = ""
 
     def __init__(self, url):
-        self.url_video = url
+        url_video = url
         try:
-            self.yt = YouTube(url)
+            self.yt = YouTube(url_video)
         except Exception as e:
             windowMessage.open_window_error(e)
 

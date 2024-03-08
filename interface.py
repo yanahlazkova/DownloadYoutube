@@ -28,8 +28,7 @@ class DownloadYoutube:
         self.button_Clear = customtkinter.CTkButton(self.app, text="X", width=10, command=self.clear_all)
         self.button_OK = customtkinter.CTkButton(
             self.app, text="OK", width=10,
-            command=lambda: self.show_data_video #(self.input_link.get())
-        )
+            command=self.show_data_video)
 
         self.text_title = customtkinter.CTkLabel(self.app, text="Name: ")  # , text_color="blue"
 
