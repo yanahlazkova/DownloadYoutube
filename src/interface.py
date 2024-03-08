@@ -1,6 +1,9 @@
 import os.path
 import tkinter as tk
-import customtkinter, re, windowMessage, io
+import customtkinter
+import re
+import windowMessage
+import io
 import listUrls
 import downloadFile
 from PIL import Image, ImageTk
@@ -15,6 +18,10 @@ class DownloadYoutube:
     app_width = 400
     app_height = 500
     video_downloaded = downloadFile.Download("")
+    theme = {
+        "blue": "./themes/blue.json",
+        "dark-blue": "./themes/dark-blue.json"
+    }
 
     def __init__(self):
         self.text_link = customtkinter.CTkLabel(self.app, text="URL: ")  # text_color="lightblue"
@@ -70,17 +77,15 @@ class DownloadYoutube:
             wrap="word",
             height=80,
             width=300,
-            cursor = "hand2"
+            cursor="hand2"
         )
-
-
 
     def create_widgets(self):
         self.text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
 
         self.input_link.grid(row=0, column=1, padx=10, sticky="ew", columnspan=2)
 
-        self.button_Clear.grid(row=0, column=3 )
+        self.button_Clear.grid(row=0, column=3)
 
         self.button_OK.grid(row=0, column=4, padx=10, sticky="e")
 
@@ -98,7 +103,6 @@ class DownloadYoutube:
 
         self.button_download.grid(row=8, column=1, padx=20, pady=20, columnspan=2)
 
-
     def show_app(self):
         self.create_widgets()
         self.center_window()
@@ -112,7 +116,6 @@ class DownloadYoutube:
         y = (screen_height - self.app_height) // 2
 
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
-       
 
     @staticmethod
     def is_youtube_url(url_video):
@@ -138,10 +141,8 @@ class DownloadYoutube:
 
         self.video_name.configure(state="disabled")
 
-
     def show_video_author(self, author):
         self.video_author.configure(text=author)
-
 
     def show_video_image(self, image):
         self.video_image.configure(image=None)
@@ -183,7 +184,7 @@ class DownloadYoutube:
         self.video_image.configure(image=None)
         self.button_download_isdisable("disable")
         self.path_to_video.delete("1.0", tk.END)
-        
+
     def clear_all(self):
         self.input_link.set("Enter video link")
         self.clear_data()
@@ -202,6 +203,7 @@ class DownloadYoutube:
         self.path_to_video.insert("1.0", path)
         self.path_to_video.bind("<Button-1>", lambda event: self.open_directory(path))
         self.path_to_video.grid(row=9, column=1, padx=10, sticky="w", columnspan=4, rowspan=20)
-    # @staticmethod
-    def open_directory(self, path):
+
+    @staticmethod
+    def open_directory(path):
         os.startfile(path)
