@@ -1,3 +1,4 @@
+import os.path
 import tkinter as tk
 import customtkinter, re, windowMessage, io
 import listUrls
@@ -12,7 +13,8 @@ class DownloadYoutube:
     app = tk.Tk()
     app.title("Download from YouTube")
     app_width = 400
-    app_height = 400
+    app_height = 500
+    video_downloaded = downloadFile.Download("")
 
     def __init__(self):
         self.text_link = customtkinter.CTkLabel(self.app, text="URL: ")  # text_color="lightblue"
@@ -48,16 +50,29 @@ class DownloadYoutube:
 
         self.text_image = customtkinter.CTkLabel(self.app, text="Image: ")
 
-        self.video_image = customtkinter.CTkLabel(self.app, text="", compound="bottom")
+        self.video_image = customtkinter.CTkLabel(self.app, text="", compound="bottom", height=100)
         self.app.columnconfigure(1, weight=1)
 
         self.button_download = customtkinter.CTkButton(
             DownloadYoutube.app,
             text="Download",
             state="disabled",
-            # command=lambda: downloadFile.download,
+            command=lambda: self.download_video(),
         )
         DownloadYoutube.app.columnconfigure(0, weight=1)
+
+        self.path_text = customtkinter.CTkLabel(self.app, text="Path to file: ")
+        self.path_to_video = customtkinter.CTkTextbox(
+            self.app,
+            text_color="steelblue1",
+            activate_scrollbars=False,
+            # state="disabled",
+            wrap="word",
+            height=80,
+            width=300,
+            cursor = "hand2"
+        )
+
 
 
     def create_widgets(self):
@@ -146,8 +161,8 @@ class DownloadYoutube:
         value = self.input_link.get()
         print("Selected value:", value)
         if DownloadYoutube.is_youtube_url(value):
-            video_downloaded = downloadFile.Download(value)
-            data_video = video_downloaded.show_data_video()
+            self.video_downloaded = downloadFile.Download(value)
+            data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
             self.show_video_title(data_video["title"])
             self.show_video_author(data_video["author"])
@@ -167,8 +182,26 @@ class DownloadYoutube:
         self.show_video_author("")
         self.video_image.configure(image=None)
         self.button_download_isdisable("disable")
+        self.path_to_video.delete("1.0", tk.END)
         
     def clear_all(self):
         self.input_link.set("Enter video link")
         self.clear_data()
-        
+
+    def download_video(self):
+        print(self.video_downloaded.get_data_video())
+        is_download = self.video_downloaded.download_video()
+        if is_download:
+            path_video = os.path.dirname(is_download)
+            print("is_download: ", path_video)
+            self.show_path_to_file(path_video)
+
+    def show_path_to_file(self, path):
+        self.path_text.grid(row=9, column=0, padx=10, sticky="e")
+        self.path_to_video.delete("1.0", tk.END)
+        self.path_to_video.insert("1.0", path)
+        self.path_to_video.bind("<Button-1>", lambda event: self.open_directory(path))
+        self.path_to_video.grid(row=9, column=1, padx=10, sticky="w", columnspan=4, rowspan=20)
+    # @staticmethod
+    def open_directory(self, path):
+        os.startfile(path)
