@@ -25,7 +25,7 @@ class DownloadYoutube:
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
         self.app.columnconfigure(1, weight=1)
 
-        self.button_Clear = customtkinter.CTkButton(self.app, text="X", width=10, command=self.clear_data)
+        self.button_Clear = customtkinter.CTkButton(self.app, text="X", width=10, command=self.clear_all)
         self.button_OK = customtkinter.CTkButton(
             self.app, text="OK", width=10,
             command=lambda: self.show_data_video #(self.input_link.get())
@@ -98,14 +98,7 @@ class DownloadYoutube:
         y = (screen_height - self.app_height) // 2
 
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
-
-    def clear_data(self):
-        self.input_link.set("Enter video link")
-        self.show_video_title("")
-        self.show_video_author("")
-        self.video_image.configure(image=None)
-        self.button_download_isdisable("disable")
-        
+       
 
     @staticmethod
     def is_youtube_url(url_video):
@@ -163,9 +156,20 @@ class DownloadYoutube:
             self.button_download_isdisable("normal")
 
         else:
+            self.clear_data()
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")
 
     def clear_variable(self):
         if self.input_link.get() == "Enter video link":
             self.input_link.set("")
 
+    def clear_data(self):
+        self.show_video_title("")
+        self.show_video_author("")
+        self.video_image.configure(image=None)
+        self.button_download_isdisable("disable")
+        
+    def clear_all(self):
+        self.input_link.set("Enter video link")
+        self.clear_data()
+        
