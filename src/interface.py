@@ -10,13 +10,14 @@ from PIL import Image, ImageTk
 import urllib.request
 
 
-# from customtkinter.windows.widgets.core_widget_classes.ctk_base_class import CTkImage
+customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
 class DownloadYoutube:
-    app = tk.Tk()
+    app = customtkinter.CTk()
     app.title("Download from YouTube")
     app_width = 400
-    app_height = 500
+    app_height = 550
     video_downloaded = downloadFile.Download("")
     theme = {
         "blue": "./themes/blue.json",
@@ -24,7 +25,9 @@ class DownloadYoutube:
     }
 
     def __init__(self):
-        self.text_link = customtkinter.CTkLabel(self.app, text="URL: ")  # text_color="lightblue"
+
+        
+        self.text_link = customtkinter.CTkLabel(self.app, text="URL: ")
 
         url_var = tk.StringVar(value="Enter video link")
         list_urls = [url["url"] for url in listUrls.list_urls]
@@ -47,7 +50,7 @@ class DownloadYoutube:
             activate_scrollbars=False,
             state="disabled",
             wrap="word",
-            height=50,
+            height=60,
             width=300,
         )
 
@@ -75,12 +78,19 @@ class DownloadYoutube:
             activate_scrollbars=False,
             # state="disabled",
             wrap="word",
-            height=80,
+            height=50,
             width=300,
             cursor="hand2"
         )
 
-        self.set_themes = customtkinter.CTkRadioButton(self.app, text=self.theme[0])
+        # self.radio_var = tk.IntVar(value=1)
+        self.text_radiobutton = customtkinter.CTkLabel(self.app, text="Select theme: ", text_color="blue")
+        # self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
+        # self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
+        
+        self.switch_var = customtkinter.StringVar(value="on")
+        self.switch = customtkinter.CTkSwitch(self.app, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+
 
     def create_widgets(self):
         self.text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
@@ -104,6 +114,16 @@ class DownloadYoutube:
         self.video_image.grid(row=6, column=1, padx=20, pady=20, columnspan=4)
 
         self.button_download.grid(row=8, column=1, padx=20, pady=20, columnspan=2)
+        
+        self.path_text.grid(row=9, column=0, padx=5, pady=20, sticky="e")
+        self.path_to_video.grid(row=9, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
+
+        
+        self.text_radiobutton.grid(row=15, column=0, sticky="e")
+        # self.themes_1.grid(row=16, column=0, padx=10, sticky="w")
+        # self.themes_2.grid(row=16, column=1, padx=10, sticky="w")
+        
+        self.switch.grid(row=16, column=0, padx=10, columnspan=2, sticky="w")
 
     def show_app(self):
         self.create_widgets()
@@ -159,6 +179,8 @@ class DownloadYoutube:
 
     def button_download_isdisable(self, state_button):
         self.button_download.configure(state=state_button)
+        print("Button Download is: ", state_button)
+        print("state button: ", self.button_download.cget("state"))
 
     def show_data_video(self):
         value = self.input_link.get()
@@ -184,7 +206,7 @@ class DownloadYoutube:
         self.show_video_title("")
         self.show_video_author("")
         self.video_image.configure(image=None)
-        self.button_download_isdisable("disable")
+        self.button_download_isdisable("disabled")
         self.path_to_video.delete("1.0", tk.END)
 
     def clear_all(self):
@@ -200,12 +222,39 @@ class DownloadYoutube:
             self.show_path_to_file(path_video)
 
     def show_path_to_file(self, path):
-        self.path_text.grid(row=9, column=0, padx=10, sticky="e")
         self.path_to_video.delete("1.0", tk.END)
         self.path_to_video.insert("1.0", path)
         self.path_to_video.bind("<Button-1>", lambda event: self.open_directory(path))
-        self.path_to_video.grid(row=9, column=1, padx=10, sticky="w", columnspan=4, rowspan=20)
 
     @staticmethod
     def open_directory(path):
         os.startfile(path)
+
+    # def set_theme(self):
+    #     level = self.radio_var.get()
+    #     match level:
+    #         case 1:
+    #             # print(self.theme["dark-blue"])
+    #             # customtkinter.set_default_color_theme(self.theme["dark-blue"])
+    #             customtkinter.set_appearance_mode("Dark")
+                
+    #         case 2:
+    #             # print(self.theme["blue"])
+    #             # customtkinter.set_default_color_theme(self.theme["blue"])
+    #             customtkinter.set_appearance_mode("Light")
+                
+    def set_theme(self):
+        color = self.switch_var.get()
+        match color:
+            case "on":
+                print("green", color)
+                customtkinter.set_default_color_theme("green")
+                customtkinter.set_appearance_mode("Dark")
+                
+            case "off":
+                print("blue", color)
+                customtkinter.set_default_color_theme("blue")
+                customtkinter.set_appearance_mode("Light")
+                
+
+                
