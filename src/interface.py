@@ -63,6 +63,9 @@ class DownloadYoutube:
         self.video_image = customtkinter.CTkLabel(self.app, text="", compound="bottom", height=100)
         self.app.columnconfigure(1, weight=1)
 
+        self.progressbar = customtkinter.CTkProgressBar(self.app, orientation="horizontal")
+
+
         self.button_download = customtkinter.CTkButton(
             DownloadYoutube.app,
             text="Download",
@@ -70,6 +73,7 @@ class DownloadYoutube:
             command=lambda: self.download_video(),
         )
         DownloadYoutube.app.columnconfigure(0, weight=1)
+        
 
         self.path_text = customtkinter.CTkLabel(self.app, text="Path to file: ")
         self.path_to_video = customtkinter.CTkTextbox(
@@ -113,10 +117,13 @@ class DownloadYoutube:
 
         self.video_image.grid(row=6, column=1, padx=20, pady=20, columnspan=4)
 
-        self.button_download.grid(row=8, column=1, padx=20, pady=20, columnspan=2)
+        self.progressbar.grid(row=8, column=0, columnspan=4)
+
+        self.button_download.grid(row=10, column=1, padx=20, pady=20, columnspan=2)
         
-        self.path_text.grid(row=9, column=0, padx=5, pady=20, sticky="e")
-        self.path_to_video.grid(row=9, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
+        
+        self.path_text.grid(row=12, column=0, padx=5, pady=20, sticky="e")
+        self.path_to_video.grid(row=12, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
 
         
         self.text_radiobutton.grid(row=15, column=0, sticky="e")
@@ -124,6 +131,8 @@ class DownloadYoutube:
         # self.themes_2.grid(row=16, column=1, padx=10, sticky="w")
         
         self.switch.grid(row=16, column=0, padx=10, columnspan=2, sticky="w")
+        
+        
 
     def show_app(self):
         self.create_widgets()
@@ -248,13 +257,21 @@ class DownloadYoutube:
         match color:
             case "on":
                 print("green", color)
-                customtkinter.set_default_color_theme("green")
+                # customtkinter.set_default_color_theme("green")
+                
                 customtkinter.set_appearance_mode("Dark")
+                self.set_color_button("green")
                 
             case "off":
                 print("blue", color)
-                customtkinter.set_default_color_theme("blue")
+                # customtkinter.set_default_color_theme("blue")
                 customtkinter.set_appearance_mode("Light")
+                self.set_color_button("darkblue")
                 
+                
+    def set_color_button(self, color_button):
+        self.button_OK.configure(fg_color=color_button)
+        self.button_download.configure(fg_color=color_button)
+        self.button_Clear.configure(fg_color=color_button)
 
                 
