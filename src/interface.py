@@ -63,7 +63,14 @@ class DownloadYoutube:
         self.video_image = customtkinter.CTkLabel(self.app, text="", compound="bottom", height=100)
         self.app.columnconfigure(1, weight=1)
 
-        self.progressbar = customtkinter.CTkProgressBar(self.app, orientation="horizontal")
+        # Progress percentage
+        self.progressbar_frame = customtkinter.CTkFrame(self.app, width=400, height=80)
+        self.progressbar_frame.columnconfigure(1, weight=1)
+
+        self.progressbar = customtkinter.CTkProgressBar(self.progressbar_frame, width=200)
+
+        self.progressbar.set(0.5)
+
 
 
         self.button_download = customtkinter.CTkButton(
@@ -88,10 +95,11 @@ class DownloadYoutube:
         )
 
         # self.radio_var = tk.IntVar(value=1)
-        self.text_radiobutton = customtkinter.CTkLabel(self.app, text="Select theme: ", text_color="blue")
+        self.text_radiobutton = customtkinter.CTkLabel(self.app, text="Select theme: ", text_color="green")
         # self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
         # self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
-        
+        self.app.columnconfigure(0, weight=1)
+
         self.switch_var = customtkinter.StringVar(value="on")
         self.switch = customtkinter.CTkSwitch(self.app, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
 
@@ -117,7 +125,8 @@ class DownloadYoutube:
 
         self.video_image.grid(row=6, column=1, padx=20, pady=20, columnspan=4)
 
-        self.progressbar.grid(row=8, column=0, columnspan=4)
+        self.progressbar_frame.grid(row=7, column=0, padx=(20, 20), columnspan=4, stick="we") #, sticky="nsew")
+        self.progressbar.grid(row=2, column=1, columnspan=5, stick="we")
 
         self.button_download.grid(row=10, column=1, padx=20, pady=20, columnspan=2)
         
@@ -127,10 +136,11 @@ class DownloadYoutube:
 
         
         self.text_radiobutton.grid(row=15, column=0, sticky="e")
+
         # self.themes_1.grid(row=16, column=0, padx=10, sticky="w")
         # self.themes_2.grid(row=16, column=1, padx=10, sticky="w")
         
-        self.switch.grid(row=16, column=0, padx=10, columnspan=2, sticky="w")
+        self.switch.grid(row=16, column=0, padx=10, pady=20, columnspan=2, sticky="w")
         
         
 
