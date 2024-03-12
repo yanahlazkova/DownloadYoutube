@@ -5,7 +5,7 @@ import re
 import windowMessage
 import io
 import listUrls
-import downloadFile
+import downloadFile, convertText
 from PIL import Image, ImageTk
 import urllib.request
 
@@ -13,11 +13,12 @@ import urllib.request
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
-class DownloadYoutube:
+class Interface:
     app = customtkinter.CTk()
     app.title("Download from YouTube")
     app_width = 400
-    app_height = 550
+    app_height = 700
+    default_color_theme = "green"
     video_downloaded = downloadFile.Download("")
     theme = {
         "blue": "./themes/blue.json",
@@ -25,66 +26,81 @@ class DownloadYoutube:
     }
 
     def __init__(self):
+        # Block enter url
+        self.frame_link = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        
-        self.text_link = customtkinter.CTkLabel(self.app, text="URL: ")
+        # Enter url: text, input, button
+        self.text_link = customtkinter.CTkLabel(self.frame_link, text="URL: ", text_color=self.default_color_theme)
 
-        url_var = tk.StringVar(value="Enter video link")
+        # url_var = tk.StringVar(value="Enter video link")
         list_urls = [url["url"] for url in listUrls.list_urls]
-        self.input_link = customtkinter.CTkComboBox(self.app, variable=url_var, values=list_urls)
+        self.input_link = customtkinter.CTkComboBox(self.frame_link,
+                                                    values=list_urls,
+                                                    width=250,
+                                                    border_color=self.default_color_theme,
+                                                    button_color=self.default_color_theme,
+                                                    dropdown_hover_color=self.default_color_theme
+                                                    )
+
         self.input_link.configure(command=lambda event: self.show_data_video())
         self.input_link.bind("<Return>", lambda event: self.show_data_video())
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
-        self.app.columnconfigure(1, weight=1)
+        # self.app.columnconfigure(1, weight=1)
 
-        self.button_Clear = customtkinter.CTkButton(self.app, text="X", width=10, command=self.clear_all)
+        self.button_Clear = customtkinter.CTkButton(self.frame_link, text="X", width=10, command=self.clear_all)
         self.button_OK = customtkinter.CTkButton(
-            self.app, text="OK", width=10,
+            self.frame_link, text="OK", width=10,
             command=self.show_data_video)
 
-        self.text_title = customtkinter.CTkLabel(self.app, text="Name: ")  # , text_color="blue"
+        # Data about video
+        self.frame_data_video = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.video_name = customtkinter.CTkTextbox(
-            self.app,
-            text_color="lightblue",
-            activate_scrollbars=False,
-            state="disabled",
-            wrap="word",
-            height=60,
-            width=300,
-        )
+        self.text_title = customtkinter.CTkLabel(self.frame_data_video, text="Name: ", text_color=self.default_color_theme)  # , text_color="blue"
 
-        self.text_autor = customtkinter.CTkLabel(self.app, text="Autor: ")  # , text_color="blue"
+        # self.video_name = customtkinter.CTkTextbox(
+        #     self.frame_data_video,
+        #     text_color="lightblue",
+        #     activate_scrollbars=False,
+        #     state="disabled",
+        #     wrap="word",
+        #     height=60,
+        #     width=300,
+        # )
+        self.video_name = customtkinter.CTkLabel(self.frame_data_video, width=280, text="", justify="left")
 
-        self.video_author = customtkinter.CTkLabel(self.app, text="", text_color="lightblue")
+        self.text_autor = customtkinter.CTkLabel(self.frame_data_video, text="Autor: ", text_color=self.default_color_theme)  # , text_color="blue"
 
-        self.text_image = customtkinter.CTkLabel(self.app, text="Image: ")
+        self.video_author = customtkinter.CTkLabel(self.frame_data_video, text="", width=280)
 
-        self.video_image = customtkinter.CTkLabel(self.app, text="", compound="bottom", height=100)
-        self.app.columnconfigure(1, weight=1)
+        self.text_image = customtkinter.CTkLabel(self.frame_data_video, text="Image: ", text_color=self.default_color_theme)
+
+        self.video_image = customtkinter.CTkLabel(self.frame_data_video, text="", compound="bottom", height=100)
+        # self.app.columnconfigure(1, weight=1)
 
         # Progress percentage
-        self.progressbar_frame = customtkinter.CTkFrame(self.app, width=400, height=80)
-        self.progressbar_frame.columnconfigure(1, weight=1)
+        self.frame_download = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.progressbar = customtkinter.CTkProgressBar(self.progressbar_frame, width=200)
+        self.text_percentage_download = customtkinter.CTkLabel(self.frame_download, text="Downloaded: ")
+        # self.percentage_download = customtkinter.CTkLabel(self.frame_download, text="85")
 
+
+        self.progressbar = customtkinter.CTkProgressBar(self.frame_download, width=200, height=5)
         self.progressbar.set(0.5)
 
 
-
         self.button_download = customtkinter.CTkButton(
-            DownloadYoutube.app,
+            self.frame_download,
             text="Download",
             state="disabled",
             command=lambda: self.download_video(),
         )
-        DownloadYoutube.app.columnconfigure(0, weight=1)
-        
 
-        self.path_text = customtkinter.CTkLabel(self.app, text="Path to file: ")
+        self.frame_path_download = customtkinter.CTkFrame(self.frame_download)
+
+
+        self.path_text = customtkinter.CTkLabel(self.frame_path_download, text="Path to file: ")
         self.path_to_video = customtkinter.CTkTextbox(
-            self.app,
+            self.frame_path_download,
             text_color="steelblue1",
             activate_scrollbars=False,
             # state="disabled",
@@ -94,47 +110,63 @@ class DownloadYoutube:
             cursor="hand2"
         )
 
+        # widgets by setting colors
+        self.frame_setting_color_window = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
         # self.radio_var = tk.IntVar(value=1)
-        self.text_radiobutton = customtkinter.CTkLabel(self.app, text="Select theme: ", text_color="green")
+        self.text_radiobutton = customtkinter.CTkLabel(self.frame_setting_color_window, text="Select theme: ", text_color=self.default_color_theme)
         # self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
         # self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
-        self.app.columnconfigure(0, weight=1)
+        # self.app.columnconfigure(0, weight=1)
 
         self.switch_var = customtkinter.StringVar(value="on")
-        self.switch = customtkinter.CTkSwitch(self.app, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+        self.switch = customtkinter.CTkSwitch(self.frame_setting_color_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
 
 
     def create_widgets(self):
-        self.text_link.grid(row=0, column=0, padx=10, pady=20, sticky="e")
+        # widgets by entered url video
+        self.app.grid_columnconfigure(0, weight=1)
 
-        self.input_link.grid(row=0, column=1, padx=10, sticky="ew", columnspan=2)
+        self.frame_link.grid(row=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
 
-        self.button_Clear.grid(row=0, column=3)
+        self.text_link.grid(row=0, column=0, padx=(20, 0), pady=(10, 0), sticky="we")
 
-        self.button_OK.grid(row=0, column=4, padx=10, sticky="e")
+        self.input_link.grid(row=0, column=1, padx=5, pady=(10, 0))
 
-        self.text_title.grid(row=1, column=0, padx=10, sticky="e")
+        self.button_Clear.grid(row=0, column=2, padx=5, pady=(10, 0))
 
-        self.video_name.grid(row=1, column=1, padx=10, sticky="w", columnspan=4, rowspan=2)
+        self.button_OK.grid(row=0, column=3, padx=5, pady=(10, 0))
 
-        self.text_autor.grid(row=3, column=0, padx=10, sticky="e")
+        # widgets by data about video
+        self.frame_data_video.grid(row=1, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
 
-        self.video_author.grid(row=3, column=1, padx=10, sticky="w", columnspan=4)
+        self.text_title.grid(row=0, column=0, padx=(20, 0), pady=10, sticky="wen")
 
-        self.text_image.grid(row=6, column=0, padx=10, sticky="e")
+        self.video_name.grid(row=0, column=1, padx=20, pady=10, ipady=5, sticky="ew")
 
-        self.video_image.grid(row=6, column=1, padx=20, pady=20, columnspan=4)
+        self.text_autor.grid(row=1, column=0, padx=(20, 0), pady=10, sticky="nwe")
 
-        self.progressbar_frame.grid(row=7, column=0, padx=(20, 20), columnspan=4, stick="we") #, sticky="nsew")
-        self.progressbar.grid(row=2, column=1, columnspan=5, stick="we")
+        self.video_author.grid(row=1, column=1, padx=20, pady=10, sticky="w")
 
-        self.button_download.grid(row=10, column=1, padx=20, pady=20, columnspan=2)
-        
-        
-        self.path_text.grid(row=12, column=0, padx=5, pady=20, sticky="e")
-        self.path_to_video.grid(row=12, column=1, padx=10, pady=20, sticky="w", columnspan=4, rowspan=2)
+        self.text_image.grid(row=2, column=0, padx=(20,0), pady=10, sticky="nwe")
 
-        
+        self.video_image.grid(row=2, column=1, padx=20, pady=10, sticky="n") #, columnspan=4)
+
+        # widgets by download of video
+        self.frame_download.columnconfigure(0, weight=1)
+        self.frame_download.grid(row=2, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
+        self.text_percentage_download.grid(row=0, column=0, pady=10, padx=20)
+
+        self.progressbar.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
+        # print(self.frame_download.grid_size())
+        self.button_download.grid(row=2, column=0, padx=20, pady=(0, 10))
+
+        self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
+        self.frame_path_download.columnconfigure(0, weight=1)
+        self.path_text.grid(row=0, padx=5, sticky="wn")
+        self.path_to_video.grid(row=1, sticky="ew")
+
+        # widhets by setting window
+        self.frame_setting_color_window.grid(row=3, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
         self.text_radiobutton.grid(row=15, column=0, sticky="e")
 
         # self.themes_1.grid(row=16, column=0, padx=10, sticky="w")
@@ -147,7 +179,7 @@ class DownloadYoutube:
     def show_app(self):
         self.create_widgets()
         self.center_window()
-        DownloadYoutube.app.mainloop()
+        Interface.app.mainloop()
 
     def center_window(self):
         screen_width = self.app.winfo_screenwidth()
@@ -175,15 +207,16 @@ class DownloadYoutube:
         return match is not None
 
     def show_video_title(self, title):
-        self.video_name.configure(state="normal")
-
-        self.video_name.delete("1.0", tk.END)
-        self.video_name.insert("1.0", title)
-
-        self.video_name.configure(state="disabled")
+        font = self.video_name.cget("font")
+        width = self.video_name.cget("width")
+        converted_text = convertText.split_text_by_width(title, width, font)
+        self.video_name.configure(text=converted_text)
 
     def show_video_author(self, author):
-        self.video_author.configure(text=author)
+        font = self.video_author.cget("font")
+        width = self.video_author.cget("width")
+        converted_text = convertText.split_text_by_width(author, width, font)
+        self.video_author.configure(text=converted_text)
 
     def show_video_image(self, image):
         self.video_image.configure(image=None)
@@ -198,13 +231,13 @@ class DownloadYoutube:
 
     def button_download_isdisable(self, state_button):
         self.button_download.configure(state=state_button)
-        print("Button Download is: ", state_button)
-        print("state button: ", self.button_download.cget("state"))
+        # print("Button Download is: ", state_button)
+        # print("state button: ", self.button_download.cget("state"))
 
     def show_data_video(self):
         value = self.input_link.get()
         print("Selected value:", value)
-        if DownloadYoutube.is_youtube_url(value):
+        if Interface.is_youtube_url(value):
             self.video_downloaded = downloadFile.Download(value)
             data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
@@ -233,7 +266,7 @@ class DownloadYoutube:
         self.clear_data()
 
     def download_video(self):
-        print(self.video_downloaded.get_data_video())
+        # print(self.video_downloaded.get_data_video())
         is_download = self.video_downloaded.download_video()
         if is_download:
             path_video = os.path.dirname(is_download)
@@ -284,4 +317,8 @@ class DownloadYoutube:
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
 
+    def set_percentage(self):
+        current_text = self.text_percentage_download.cget("text")
+        print("%: ", self.video_downloaded.get_info_video())
+        self.text_percentage_download.configure(text=current_text)
                 

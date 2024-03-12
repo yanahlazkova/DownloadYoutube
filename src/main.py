@@ -1,7 +1,7 @@
 import interface
 
 
-myApp = interface.DownloadYoutube()
+myApp = interface.Interface()
 
 myApp.show_app()
 
