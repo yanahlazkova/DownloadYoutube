@@ -160,12 +160,12 @@ class Interface:
         # print(self.frame_download.grid_size())
         self.button_download.grid(row=2, column=0, padx=20, pady=(0, 10))
 
-        self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
+        # self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
         self.frame_path_download.columnconfigure(0, weight=1)
         self.path_text.grid(row=0, padx=5, sticky="wn")
         self.path_to_video.grid(row=1, sticky="ew")
 
-        # widhets by setting window
+        # widgets by setting window
         self.frame_setting_color_window.grid(row=3, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
         self.text_radiobutton.grid(row=15, column=0, sticky="e")
 
@@ -231,35 +231,46 @@ class Interface:
 
     def button_download_isdisable(self, state_button):
         self.button_download.configure(state=state_button)
-        # print("Button Download is: ", state_button)
-        # print("state button: ", self.button_download.cget("state"))
+
 
     def show_data_video(self):
         value = self.input_link.get()
+        self.clear_data()
         print("Selected value:", value)
-        if Interface.is_youtube_url(value):
+        if self.is_youtube_url(value):
+            # self.clear_data()
             self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage)
             data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
-            self.show_video_title(data_video["title"])
-            self.show_video_author(data_video["author"])
-            self.show_video_image(data_video["image"])
-            self.button_download_isdisable("normal")
+            if data_video:
+                self.show_video_title(data_video["title"])
+                self.show_video_author(data_video["author"])
+                self.show_video_image(data_video["image"])
+                self.button_download_isdisable("normal")
 
         else:
-            self.clear_data()
+            # self.clear_data()
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")
 
     def clear_variable(self):
         if self.input_link.get() == "Enter video link":
             self.input_link.set("")
 
+    def clear_data_download(self):
+        print("clear")
+        self.frame_path_download.grid_remove()
+        # self.path_text.grid_remove()
+        # self.path_to_video.grid_remove()
+
     def clear_data(self):
-        self.show_video_title("")
-        self.show_video_author("")
+
+        self.video_name.configure(text="")
+        self.video_author.configure(text="")
         self.video_image.configure(image=None)
         self.button_download_isdisable("disabled")
-        self.path_to_video.delete("1.0", tk.END)
+        self.path_to_video.delete("0.0", tk.END)
+        self.clear_data_download()
+
 
     def clear_all(self):
         self.input_link.set("Enter video link")
@@ -269,6 +280,7 @@ class Interface:
         # print(self.video_downloaded.get_data_video())
         is_download = self.video_downloaded.download_video()
         if is_download:
+            self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
             path_video = os.path.dirname(is_download)
             print("is_download: ", path_video)
             self.show_path_to_file(path_video)
@@ -323,3 +335,4 @@ class Interface:
         self.text_percentage_download.configure(text=percentage)
         self.text_percentage_download.update()
                 
+# Исправить очистку Download при смене или вводе нового адреса
