@@ -19,7 +19,7 @@ class Interface:
     app_width = 400
     app_height = 700
     default_color_theme = "green"
-    video_downloaded = downloadFile.Download("")
+    video_downloaded = "" #downloadFile.Download("")
     theme = {
         "blue": "./themes/blue.json",
         "dark-blue": "./themes/dark-blue.json"
@@ -238,7 +238,7 @@ class Interface:
         value = self.input_link.get()
         print("Selected value:", value)
         if Interface.is_youtube_url(value):
-            self.video_downloaded = downloadFile.Download(value)
+            self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage)
             data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
             self.show_video_title(data_video["title"])
@@ -317,8 +317,9 @@ class Interface:
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
 
-    def set_percentage(self):
+    def set_percentage(self, percentage):
         current_text = self.text_percentage_download.cget("text")
-        print("%: ", self.video_downloaded.get_info_video())
-        self.text_percentage_download.configure(text=current_text)
+        print("%: ", percentage)
+        self.text_percentage_download.configure(text=percentage)
+        self.text_percentage_download.update()
                 

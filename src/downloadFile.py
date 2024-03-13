@@ -5,10 +5,11 @@ import windowMessage, interface
 class Download:
     url_video = ""
 
-    def __init__(self, url):
+    def __init__(self, url, progress_callback):
         if url == "":
             return
         else:
+            self.progress_callback = progress_callback
             url_video = url
             try:
                 self.yt = YouTube(url_video,
@@ -32,21 +33,19 @@ class Download:
 
     def download_video(self):
         try:
-            self.stream = self.yt.streams.get_highest_resolution()
-            is_download = self.stream.download("videos")
-            print("download_video: ", dir(is_download))
+            is_download = self.yt.streams.get_highest_resolution().download("videos")
             return is_download
         except Exception as e:
             windowMessage.open_window_error(f"Failed to upload video: {e}")
 
-    # def get_info_video(self):
-    #     return self.yt.streams.stream, self.yt.bytes_remaining
-    def on_progress(self):
-        total_size = self.stream.filesize
-        bytes_downloaded = total_size - self.stream.bytes_remaining
-        percentage_of_compeletion = bytes_downloaded / total_size * 100
-        per = str(int(percentage_of_compeletion))
-        print("%: ", per)
+
+    def on_progress(self, stream, chunk, bytes_remaining):
+        total_size = stream.filesize
+        bytes_downloaded = total_size - bytes_remaining
+        percentage = (bytes_downloaded / total_size) * 100
+        self.progress_callback(int(percentage))
+        print(f"Downloaded: {percentage: .2f}%")
+
 
     @staticmethod
     def on_complete():
