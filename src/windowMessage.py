@@ -20,7 +20,7 @@ def show_message_link(title, text_link):
 
     customtkinter.set_ctk_parent_class(tkinter.Tk)
     customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
-    customtkinter.set_default_color_theme("./themes/blue.json")
+    customtkinter.set_default_color_theme("green")
 
     app = customtkinter.CTk()
     app.title(title)

@@ -14,7 +14,7 @@ class Download:
             try:
                 self.yt = YouTube(url_video,
                                   on_progress_callback=self.on_progress,
-                                  # on_complete_callback=self.on_complete,
+                                  on_complete_callback=self.on_complete,
                                   ) #, use_oauth=True, allow_oauth_cache=True)
             except Exception as e:
                 windowMessage.open_window_error(e)
@@ -47,7 +47,7 @@ class Download:
         print(f"Downloaded: {percentage: .2f}%")
 
 
-    @staticmethod
-    def on_complete():
-
+    # @staticmethod
+    def on_complete(self, stream, path_file):
+        windowMessage.show_message_link("Download is complete", path_file)
         print("complete_callback")

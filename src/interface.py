@@ -45,7 +45,7 @@ class Interface:
         self.input_link.configure(command=lambda event: self.show_data_video())
         self.input_link.bind("<Return>", lambda event: self.show_data_video())
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
-        # self.app.columnconfigure(1, weight=1)
+        self.input_link.bind("<FocusOut>", lambda event: self.show_placeholder())
 
         self.button_Clear = customtkinter.CTkButton(self.frame_link, text="X", width=10, command=self.clear_all)
         self.button_OK = customtkinter.CTkButton(
@@ -57,15 +57,6 @@ class Interface:
 
         self.text_title = customtkinter.CTkLabel(self.frame_data_video, text="Name: ", text_color=self.default_color_theme)  # , text_color="blue"
 
-        # self.video_name = customtkinter.CTkTextbox(
-        #     self.frame_data_video,
-        #     text_color="lightblue",
-        #     activate_scrollbars=False,
-        #     state="disabled",
-        #     wrap="word",
-        #     height=60,
-        #     width=300,
-        # )
         self.video_name = customtkinter.CTkLabel(self.frame_data_video, width=280, text="", justify="left")
 
         self.text_autor = customtkinter.CTkLabel(self.frame_data_video, text="Autor: ", text_color=self.default_color_theme)  # , text_color="blue"
@@ -74,18 +65,18 @@ class Interface:
 
         self.text_image = customtkinter.CTkLabel(self.frame_data_video, text="Image: ", text_color=self.default_color_theme)
 
-        self.video_image = customtkinter.CTkLabel(self.frame_data_video, text="", compound="bottom", height=100)
+        self.video_image = customtkinter.CTkLabel(self.frame_data_video, text="", compound="bottom", height=80)
         # self.app.columnconfigure(1, weight=1)
 
         # Progress percentage
         self.frame_download = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.text_percentage_download = customtkinter.CTkLabel(self.frame_download, text="Downloaded: ")
+        self.text_percentage_download = customtkinter.CTkLabel(self.frame_download, text="Downloaded: 0 %")
         # self.percentage_download = customtkinter.CTkLabel(self.frame_download, text="85")
 
 
         self.progressbar = customtkinter.CTkProgressBar(self.frame_download, width=200, height=5)
-        self.progressbar.set(0.5)
+        self.progressbar.set(0)
 
 
         self.button_download = customtkinter.CTkButton(
@@ -232,6 +223,9 @@ class Interface:
     def button_download_isdisable(self, state_button):
         self.button_download.configure(state=state_button)
 
+    def show_placeholder(self):
+        if self.input_link.get() == "":
+            self.input_link.set("Enter video link")
 
     def show_data_video(self):
         value = self.input_link.get()
@@ -259,6 +253,9 @@ class Interface:
     def clear_data_download(self):
         print("clear")
         self.frame_path_download.grid_remove()
+        self.path_to_video.delete("0.0", tk.END)
+        self.text_percentage_download.configure(text="Downloaded: 0 %")
+        self.progressbar.set(0)
         # self.path_text.grid_remove()
         # self.path_to_video.grid_remove()
 
@@ -268,7 +265,6 @@ class Interface:
         self.video_author.configure(text="")
         self.video_image.configure(image=None)
         self.button_download_isdisable("disabled")
-        self.path_to_video.delete("0.0", tk.END)
         self.clear_data_download()
 
 
@@ -321,7 +317,7 @@ class Interface:
                 print("blue", color)
                 # customtkinter.set_default_color_theme("blue")
                 customtkinter.set_appearance_mode("Light")
-                self.set_color_button("darkblue")
+                self.set_color_button("lightblue")
                 
                 
     def set_color_button(self, color_button):
@@ -332,7 +328,8 @@ class Interface:
     def set_percentage(self, percentage):
         current_text = self.text_percentage_download.cget("text")
         print("%: ", percentage)
-        self.text_percentage_download.configure(text=percentage)
+        self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
+        self.progressbar.set(percentage / 100)
         self.text_percentage_download.update()
+        # self.progressbar
                 
-# Исправить очистку Download при смене или вводе нового адреса
