@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/downloadFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/downloadFile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/listUrls.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/listUrls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/windowMessage.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/windowMessage.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

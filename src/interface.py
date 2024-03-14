@@ -96,21 +96,22 @@ class Interface:
             activate_scrollbars=False,
             # state="disabled",
             wrap="word",
-            height=50,
-            width=300,
+            height=55,
+            width=335,
             cursor="hand2"
         )
 
         # widgets by setting colors
-        self.frame_setting_color_window = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
+        self.frame_setting_window = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
         # self.radio_var = tk.IntVar(value=1)
-        self.text_radiobutton = customtkinter.CTkLabel(self.frame_setting_color_window, text="Select theme: ", text_color=self.default_color_theme)
+        self.text_radiobutton = customtkinter.CTkLabel(self.frame_setting_window, text="Select theme: ", text_color=self.default_color_theme)
         # self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
         # self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
         # self.app.columnconfigure(0, weight=1)
 
         self.switch_var = customtkinter.StringVar(value="on")
-        self.switch = customtkinter.CTkSwitch(self.frame_setting_color_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+        self.switch = customtkinter.CTkSwitch(self.frame_setting_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+
 
 
     def create_widgets(self):
@@ -152,20 +153,22 @@ class Interface:
         self.button_download.grid(row=2, column=0, padx=20, pady=(0, 10))
 
         # self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
-        self.frame_path_download.columnconfigure(0, weight=1)
-        self.path_text.grid(row=0, padx=5, sticky="wn")
-        self.path_to_video.grid(row=1, sticky="ew")
+        # self.frame_path_download.columnconfigure(0, weight=1)
+        self.path_text.grid(row=0, column=0, padx=5, sticky="wn")
+        self.path_to_video.grid(row=1, column=0, padx=5, sticky="ew")
 
         # widgets by setting window
-        self.frame_setting_color_window.grid(row=3, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
-        self.text_radiobutton.grid(row=15, column=0, sticky="e")
+        self.frame_setting_window.grid(row=3, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
+
+        self.text_radiobutton.grid(row=0, column=0, pady=5, sticky="e")
 
         # self.themes_1.grid(row=16, column=0, padx=10, sticky="w")
         # self.themes_2.grid(row=16, column=1, padx=10, sticky="w")
         
-        self.switch.grid(row=16, column=0, padx=10, pady=20, columnspan=2, sticky="w")
-        
-        
+        self.switch.grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+
+
+
 
     def show_app(self):
         self.create_widgets()
@@ -256,8 +259,7 @@ class Interface:
         self.path_to_video.delete("0.0", tk.END)
         self.text_percentage_download.configure(text="Downloaded: 0 %")
         self.progressbar.set(0)
-        # self.path_text.grid_remove()
-        # self.path_to_video.grid_remove()
+
 
     def clear_data(self):
         self.video_name.configure(text="")
@@ -273,12 +275,13 @@ class Interface:
     def download_video(self):
         # print(self.video_downloaded.get_data_video())
         is_download=self.video_downloaded.download_video()
-        print("Downloaded...", is_download)
         if is_download:
             self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
             path_video = os.path.dirname(is_download)
             print("is_download: ", path_video)
             self.show_path_to_file(path_video)
+        else:
+            self.progressbar.set(0)
 
     def show_path_to_file(self, path):
         self.path_to_video.delete("1.0", tk.END)
@@ -317,7 +320,8 @@ class Interface:
                 # customtkinter.set_default_color_theme("blue")
                 customtkinter.set_appearance_mode("Light")
                 self.set_color_button("lightblue")
-                
+
+
                 
     def set_color_button(self, color_button):
         self.button_OK.configure(fg_color=color_button)
@@ -325,7 +329,7 @@ class Interface:
         self.button_Clear.configure(fg_color=color_button)
 
     def set_percentage(self, percentage):
-        # current_text = self.text_percentage_download.cget("text")
+        current_text = self.text_percentage_download.cget("text")
         print("%: ", percentage)
         self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
         self.progressbar.set(percentage / 100)

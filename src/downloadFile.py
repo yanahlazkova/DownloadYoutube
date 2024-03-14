@@ -1,5 +1,6 @@
 from pytube import YouTube
-import windowMessage, interface
+import windowMessage
+import threading
 
 
 class Download:
@@ -10,11 +11,11 @@ class Download:
             return
         else:
             self.progress_callback = progress_callback
-            url_video = url
+            self.url_video = url
             try:
-                self.yt = YouTube(url_video,
+                self.yt = YouTube(self.url_video,
                                   on_progress_callback=self.on_progress,
-                                  on_complete_callback=self.on_complete,
+                                  on_complete_callback=self.on_complete
                                   ) #, use_oauth=True, allow_oauth_cache=True)
             except Exception as e:
                 windowMessage.open_window_error(e)
@@ -25,7 +26,6 @@ class Download:
             author = self.yt.author
             image = self.yt.thumbnail_url
             video_data = {"title": title, "author": author, "image": image}
-            print(self.yt.vid_info)
 
             return video_data
         except:
@@ -50,6 +50,7 @@ class Download:
 
     # @staticmethod
     def on_complete(self, stream, path_file):
-        windowMessage.show_message_link("Download is completed", "Download is completed", path_file)
+        # windowMessage.show_message_link("Download is completed", path_file)
+        windowMessage.open_window_message("Downloaded", "Download is completed")
         print("path: ", path_file)
         # print("stream: ", stream)
