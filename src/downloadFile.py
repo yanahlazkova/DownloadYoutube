@@ -33,7 +33,8 @@ class Download:
 
     def download_video(self):
         try:
-            is_download = self.yt.streams.get_highest_resolution().download("videos")
+            stream = self.yt.streams.get_highest_resolution()
+            is_download = stream.download("videos")
             return is_download
         except Exception as e:
             windowMessage.open_window_error(f"Failed to upload video: {e}")
@@ -49,5 +50,6 @@ class Download:
 
     # @staticmethod
     def on_complete(self, stream, path_file):
-        windowMessage.show_message_link("Download is complete", path_file)
-        print("complete_callback")
+        windowMessage.show_message_link("Download is completed", "Download is completed", path_file)
+        print("path: ", path_file)
+        # print("stream: ", stream)

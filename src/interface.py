@@ -233,7 +233,8 @@ class Interface:
         print("Selected value:", value)
         if self.is_youtube_url(value):
             # self.clear_data()
-            self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage)
+            self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage
+                                                          )
             data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
             if data_video:
@@ -241,7 +242,6 @@ class Interface:
                 self.show_video_author(data_video["author"])
                 self.show_video_image(data_video["image"])
                 self.button_download_isdisable("normal")
-
         else:
             # self.clear_data()
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")
@@ -260,13 +260,11 @@ class Interface:
         # self.path_to_video.grid_remove()
 
     def clear_data(self):
-
         self.video_name.configure(text="")
         self.video_author.configure(text="")
         self.video_image.configure(image=None)
         self.button_download_isdisable("disabled")
         self.clear_data_download()
-
 
     def clear_all(self):
         self.input_link.set("Enter video link")
@@ -274,7 +272,8 @@ class Interface:
 
     def download_video(self):
         # print(self.video_downloaded.get_data_video())
-        is_download = self.video_downloaded.download_video()
+        is_download=self.video_downloaded.download_video()
+        print("Downloaded...", is_download)
         if is_download:
             self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
             path_video = os.path.dirname(is_download)
@@ -326,10 +325,13 @@ class Interface:
         self.button_Clear.configure(fg_color=color_button)
 
     def set_percentage(self, percentage):
-        current_text = self.text_percentage_download.cget("text")
+        # current_text = self.text_percentage_download.cget("text")
         print("%: ", percentage)
         self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
         self.progressbar.set(percentage / 100)
         self.text_percentage_download.update()
         # self.progressbar
+
+    def is_download(self):
+        pass
                 
