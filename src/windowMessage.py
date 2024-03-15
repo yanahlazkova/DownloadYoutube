@@ -3,6 +3,10 @@ import os, tkinter
 from tkinter import messagebox
 
 
+# todo: you can create a class "App", "MainApp" or "Window" from this code
+# to maintain multiple windows you got in your application
+# for extra window it's recommended to use class TopLevel widget:
+# https://customtkinter.tomschimansky.com/documentation/windows/toplevel
 
 def open_window_message(text_title, text_message):
     messagebox.showinfo(text_title, text_message)
@@ -14,6 +18,8 @@ def open_window_error(text_error):
 
 def show_message_link(title, link):
 
+    # todo: same method one more time
+    # maybe we need a "helpers" file instead?
     def center_window(app_width, app_height):
         screen_width = app.winfo_screenwidth()
         screen_height = app.winfo_screenheight()

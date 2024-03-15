@@ -1,4 +1,6 @@
-import os.path
+# todo: rewrite import for importing parts of libraries, not full libraries
+# example:
+from os import path
 import tkinter as tk
 import customtkinter
 import re
@@ -10,10 +12,15 @@ from PIL import Image, ImageTk
 import urllib.request
 
 
+# todo: this code can be easily managed by creating class "App", "MainApp" or "Window"
+# in your main.py file
+# important: remove unneccesary / unused comments like these:
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
+# todo: each class (and eventually - it's methods) has to have a brief description below it's name, like so:
 class Interface:
+    """ creates interface, place widgets into UI """
     app = customtkinter.CTk()
     app.title("Download from YouTube")
     app_width = 400
@@ -25,6 +32,9 @@ class Interface:
         "dark-blue": "./themes/dark-blue.json"
     }
 
+    # todo: try to keep constuctor flexible by using params AND
+    # try to make it short and easy-to-understand
+    # todo: remove widget creation into some method, e.g. create_widgets() or so   
     def __init__(self):
         # Block enter url
         self.frame_link = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
@@ -42,6 +52,9 @@ class Interface:
                                                     dropdown_hover_color=self.default_color_theme
                                                     )
 
+        # todo: no need to make so comple logic for combobox
+        # you can simpy use command="command_name" to link event 
+        # https://customtkinter.tomschimansky.com/documentation/widgets/combobox
         self.input_link.configure(command=lambda event: self.show_data_video())
         self.input_link.bind("<Return>", lambda event: self.show_data_video())
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
@@ -79,6 +92,7 @@ class Interface:
         self.progressbar.set(0)
 
 
+        # to review: is it really necessary to click the button when app is just started? 
         self.button_download = customtkinter.CTkButton(
             self.frame_download,
             text="Download",
@@ -169,13 +183,16 @@ class Interface:
 
 
 
-
+    # todo: this really should belongs to another class "App"
     def show_app(self):
+        """ todo: short description"""
         self.create_widgets()
         self.center_window()
         Interface.app.mainloop()
 
+    # todo: this is too...
     def center_window(self):
+        """ todo: short description"""
         screen_width = self.app.winfo_screenwidth()
         screen_height = self.app.winfo_screenheight()
 
@@ -184,6 +201,9 @@ class Interface:
 
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
 
+
+    # to review: do you really need this to check your links? 
+    # pytube already has it's own built-in link validation
     @staticmethod
     def is_youtube_url(url_video):
         # Регулярное выражение для проверки ссылок YouTube
@@ -277,7 +297,7 @@ class Interface:
         is_download=self.video_downloaded.download_video()
         if is_download:
             self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
-            path_video = os.path.dirname(is_download)
+            path_video = path.dirname(is_download)
             print("is_download: ", path_video)
             self.show_path_to_file(path_video)
         else:
@@ -292,6 +312,8 @@ class Interface:
     def open_directory(path):
         os.startfile(path)
 
+    # todo: remove unneccesary comments 
+    
     # def set_theme(self):
     #     level = self.radio_var.get()
     #     match level:
