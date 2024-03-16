@@ -3,18 +3,19 @@ import windowMessage
 # import threading
 
 
-class Download:
+class Downloader:
     """todo: short description """
     url_video = ""
 
     # to review: it seems like too complicated logic for a simple constuctor
     # check, if you really need it
-    def __init__(self, url, progress_callback):
+    def __init__(self, url, progressbar, percentage):
+        self.progressbar = progressbar
+        self.percentage = percentage
         print("class - url", url)
         if url == "":
             return
         else:
-            self.progress_callback = progress_callback
             self.url_video = url
             try:
                 self.yt = YouTube(self.url_video,
@@ -51,8 +52,12 @@ class Download:
         total_size = stream.filesize
         bytes_downloaded = total_size - bytes_remaining
         percentage = (bytes_downloaded / total_size) * 100
-        self.progress_callback(int(percentage))
+        # self.progress_callback(int(percentage))
         print(f"Downloaded: {percentage: .2f}%")
+        print("%: ", percentage)
+        self.percentage.configure(text=f"Downloaded: {percentage} %")
+        self.progressbar.set(percentage / 100)
+        self.percentage.update()
 
 
     # @staticmethod

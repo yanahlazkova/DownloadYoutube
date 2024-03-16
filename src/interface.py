@@ -7,7 +7,8 @@ import re
 import windowMessage
 import io
 import listUrls
-import downloadFile, convertText
+from downloadFile import Downloader
+import convertText
 from PIL import Image, ImageTk
 import urllib.request
 
@@ -35,7 +36,13 @@ class Interface:
     # todo: try to keep constuctor flexible by using params AND
     # try to make it short and easy-to-understand
     # todo: remove widget creation into some method, e.g. create_widgets() or so   
-    def __init__(self):
+    def __init__(self, widgets):
+        self.widgets = widgets
+
+        # Подключаем downloader
+        self.downloader = Downloader(list_urls[0], self.progressbar, self.percentage_label)
+
+    def create_widgets(self):
         # Block enter url
         self.frame_link = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
@@ -53,7 +60,7 @@ class Interface:
                                                     )
 
         # todo: no need to make so comple logic for combobox
-        # you can simpy use command="command_name" to link event 
+        # you can simpy use command="command_name" to link event
         # https://customtkinter.tomschimansky.com/documentation/widgets/combobox
         self.input_link.configure(command=lambda event: self.show_data_video())
         self.input_link.bind("<Return>", lambda event: self.show_data_video())
@@ -84,7 +91,7 @@ class Interface:
         # Progress percentage
         self.frame_download = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.text_percentage_download = customtkinter.CTkLabel(self.frame_download, text="Downloaded: 0 %")
+        self.percentage_label = customtkinter.CTkLabel(self.frame_download, text="Downloaded: 0 %")
         # self.percentage_download = customtkinter.CTkLabel(self.frame_download, text="85")
 
 
@@ -92,7 +99,7 @@ class Interface:
         self.progressbar.set(0)
 
 
-        # to review: is it really necessary to click the button when app is just started? 
+        # to review: is it really necessary to click the button when app is just started?
         self.button_download = customtkinter.CTkButton(
             self.frame_download,
             text="Download",
@@ -126,9 +133,7 @@ class Interface:
         self.switch_var = customtkinter.StringVar(value="on")
         self.switch = customtkinter.CTkSwitch(self.frame_setting_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
 
-
-
-    def create_widgets(self):
+    def place_widgets(self):
         # widgets by entered url video
         self.app.grid_columnconfigure(0, weight=1)
 
@@ -160,7 +165,7 @@ class Interface:
         # widgets by download of video
         self.frame_download.columnconfigure(0, weight=1)
         self.frame_download.grid(row=2, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
-        self.text_percentage_download.grid(row=0, column=0, pady=10, padx=20)
+        self.percentage_label.grid(row=0, column=0, pady=10, padx=20)
 
         self.progressbar.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
         # print(self.frame_download.grid_size())
@@ -186,7 +191,7 @@ class Interface:
     # todo: this really should belongs to another class "App"
     def show_app(self):
         """ todo: short description"""
-        self.create_widgets()
+        self.place_widgets()
         self.center_window()
         Interface.app.mainloop()
 
@@ -251,14 +256,15 @@ class Interface:
             self.input_link.set("Enter video link")
 
     def show_data_video(self):
+        """  sdfsdfs  """
         value = self.input_link.get()
         self.clear_data()
         print("Selected value:", value)
         if self.is_youtube_url(value):
             # self.clear_data()
-            self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage
-                                                          )
-            data_video = self.video_downloaded.get_data_video()
+            # self.video_downloaded = Downloader.get_data_video(value, progress_callback=self.set_percentage
+            #                                                 )
+            data_video = self.downloader.get_data_video(self)
             print("data_video", [data_video])
             if data_video:
                 self.show_video_title(data_video["title"])
@@ -277,7 +283,7 @@ class Interface:
         print("clear")
         self.frame_path_download.grid_remove()
         self.path_to_video.delete("0.0", tk.END)
-        self.text_percentage_download.configure(text="Downloaded: 0 %")
+        self.percentage_label.configure(text="Downloaded: 0 %")
         self.progressbar.set(0)
 
 
@@ -350,13 +356,13 @@ class Interface:
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
 
-    def set_percentage(self, percentage):
-        current_text = self.text_percentage_download.cget("text")
-        print("%: ", percentage)
-        self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
-        self.progressbar.set(percentage / 100)
-        self.text_percentage_download.update()
-        # self.progressbar
+    # def set_percentage(self, percentage):
+    #     # current_text = self.text_percentage_download.cget("text")
+    #     print("%: ", percentage)
+    #     self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
+    #     self.progressbar.set(percentage / 100)
+    #     self.text_percentage_download.update()
+    #     # self.progressbar
 
     def is_download(self):
         pass
