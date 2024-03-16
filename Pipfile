@@ -8,6 +8,8 @@ customtkinter = "*"
 pytube = "*"
 image = "*"
 pygetwindow = "*"
+pytube3 = "*"
+pillow = "*"
 
 [dev-packages]
 

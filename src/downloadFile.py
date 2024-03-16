@@ -1,6 +1,6 @@
 from pytube import YouTube
 import windowMessage
-import threading
+# import threading
 
 
 class Download:
@@ -10,6 +10,7 @@ class Download:
     # to review: it seems like too complicated logic for a simple constuctor
     # check, if you really need it
     def __init__(self, url, progress_callback):
+        print("class - url", url)
         if url == "":
             return
         else:
@@ -21,19 +22,20 @@ class Download:
                                   on_complete_callback=self.on_complete
                                   ) #, use_oauth=True, allow_oauth_cache=True)
             except Exception as e:
-                windowMessage.open_window_error(e)
+                windowMessage.open_window_error("Create object Youtube" + str(e))
 
 
     def get_data_video(self):
+        print("class Download", self.url_video)
         try:
             title = self.yt.title
             author = self.yt.author
             image = self.yt.thumbnail_url
             video_data = {"title": title, "author": author, "image": image}
-
             return video_data
         except:
             windowMessage.open_window_error("YouTube link is invalid")
+            return None
 
 
     def download_video(self):

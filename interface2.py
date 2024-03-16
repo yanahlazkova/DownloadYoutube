@@ -1,4 +1,5 @@
 import os.path
+import tkinter
 import tkinter as tk
 import urllib.request
 
@@ -99,10 +100,39 @@ image_data = response.read()
 image = Image.open(io.BytesIO(image_data))
 
 # Создание CTkImage
-ctk_image = customtkinter.CTkImage(image)
+# ctk_image = customtkinter.CTkImage(image)
 
 # Создание CTkLabel для отображения изображения
-image_label = customtkinter.CTkLabel(app, image=ctk_image)
-image_label.grid(row=2, column=1, padx=(20, 0))
+# image_label = customtkinter.CTkLabel(app, image=ctk_image)
+# image_label.grid(row=2, column=1, padx=(20, 0))
+
+# from src.windowMessage import show_message_link
+
+
+def show_message_link(title, link):
+    def close_app():
+        app_mess.destroy()
+
+    app_mess = tkinter.Tk()
+    app_mess.title(title)
+    app_mess.geometry("350x200")
+    message_label = customtkinter.CTkLabel(app_mess, text="Downloaded is completed")
+    message_label.grid(row=0, column=0)
+
+    text_label = customtkinter.CTkLabel(app_mess, text="Open folder", text_color="steelblue1", cursor="hand2")
+    text_label.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
+    # text_label.bind("<Button-1>", open_directory)
+
+    button = customtkinter.CTkButton(app_mess, text="Close", command=close_app)
+    button.grid()
+
+    app_mess.mainloop()
+
+def on_message():
+    show_message_link("title", "./src/")
+
+
+button_message = customtkinter.CTkButton(app, text="message", command=on_message)
+button_message.grid()
 
 app.mainloop()
