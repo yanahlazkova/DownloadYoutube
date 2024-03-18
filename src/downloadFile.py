@@ -7,18 +7,15 @@ class Download:
     url_video = ""
 
     def __init__(self, url, progress_callback):
-        if url == "":
-            return
-        else:
-            self.progress_callback = progress_callback
-            self.url_video = url
-            try:
-                self.yt = YouTube(self.url_video,
-                                  on_progress_callback=self.on_progress,
-                                  on_complete_callback=self.on_complete
-                                  ) #, use_oauth=True, allow_oauth_cache=True)
-            except Exception as e:
-                windowMessage.open_window_error(e)
+        self.progress_callback = progress_callback
+        self.url_video = url
+        try:
+            self.yt = YouTube(self.url_video,
+                              on_progress_callback=self.on_progress,
+                              on_complete_callback=self.on_complete
+                              ) #, use_oauth=True, allow_oauth_cache=True)
+        except Exception as e:
+            windowMessage.open_window_error(e)
 
     def get_data_video(self):
         try:

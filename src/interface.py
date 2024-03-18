@@ -2,7 +2,7 @@ import os.path
 import tkinter as tk
 import customtkinter
 import re
-import windowMessage
+from tkinter.messagebox import showinfo, showerror
 import io
 import listUrls
 import downloadFile, convertText
@@ -184,6 +184,9 @@ class Interface:
 
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
 
+        # makes the window non-resizable
+        self.app.resizable(height=False, width=False)
+
     @staticmethod
     def is_youtube_url(url_video):
         # Регулярное выражение для проверки ссылок YouTube
@@ -223,7 +226,8 @@ class Interface:
 
         self.video_image.configure(image=photo_image)
 
-    def button_download_isdisable(self, state_button):
+    def button_download_state(self, state_button):
+        """ function makes state of button disable/normal """
         self.button_download.configure(state=state_button)
 
     def show_placeholder(self):
@@ -231,12 +235,15 @@ class Interface:
             self.input_link.set("Enter video link")
 
     def show_data_video(self):
-        value = self.input_link.get()
+        url = self.input_link.get()
+        if url == "" or url == "Enter video link":
+            showerror("Error...", "YouTube link is invalid")
+            return
         self.clear_data()
-        print("Selected value:", value)
-        if self.is_youtube_url(value):
+        print("Selected value:", url)
+        if self.is_youtube_url(url):
             # self.clear_data()
-            self.video_downloaded = downloadFile.Download(value, progress_callback=self.set_percentage
+            self.video_downloaded = downloadFile.Download(url, progress_callback=self.set_percentage
                                                           )
             data_video = self.video_downloaded.get_data_video()
             print("data_video", [data_video])
@@ -244,7 +251,7 @@ class Interface:
                 self.show_video_title(data_video["title"])
                 self.show_video_author(data_video["author"])
                 self.show_video_image(data_video["image"])
-                self.button_download_isdisable("normal")
+                self.button_download_state("normal")
         else:
             # self.clear_data()
             windowMessage.open_window_error("Url video invalid!\nEnter correct link.")
@@ -265,7 +272,7 @@ class Interface:
         self.video_name.configure(text="")
         self.video_author.configure(text="")
         self.video_image.configure(image=None)
-        self.button_download_isdisable("disabled")
+        self.button_download_state("disabled")
         self.clear_data_download()
 
     def clear_all(self):

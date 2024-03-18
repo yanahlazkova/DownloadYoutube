@@ -1,15 +1,15 @@
 import customtkinter
 import os, tkinter
-from tkinter import messagebox
+from tkinter.messagebox import showinfo, showerror
 
 
 
 def open_window_message(text_title, text_message):
-    messagebox.showinfo(text_title, text_message)
+    showinfo(text_title, text_message)
 
 
 def open_window_error(text_error):
-    messagebox.showerror("Error...", text_error)
+    showerror("Error...", text_error)
 
 
 def show_message_link(title, link):

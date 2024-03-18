@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d6fbddd1-dc82-4715-ad36-bee3cf09d4bb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/downloadFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/downloadFile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/windowMessage.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/windowMessage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/videos/Скачиваем видео с Youtube при помощи Python.mp4" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
