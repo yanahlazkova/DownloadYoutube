@@ -90,7 +90,8 @@ class Downloader:
         print("path: ", self.path_file)
 
     def check_video_exists(self):
-        """ checking if the file exists """
+        """ checking if the file exists
+        if file exists, to add number at the end of the file"""
         count = 0
         new_file_name = self.file_name
         print("file_name", new_file_name)
