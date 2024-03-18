@@ -113,6 +113,14 @@ def show_message_link(title, link):
     def close_app():
         app_mess.destroy()
 
+    dictionary = {
+        "label":
+            {
+                "label1": "1",
+                "label2": "2"
+            }
+    }
+    print(dictionary["label"]["label1"])
     app_mess = tkinter.Tk()
     app_mess.title(title)
     app_mess.geometry("350x200")

@@ -6,7 +6,7 @@ import customtkinter
 import re
 import windowMessage
 import io
-import listUrls
+from listUrls import list_urls
 from downloadFile import Downloader
 import convertText
 from PIL import Image, ImageTk
@@ -40,19 +40,21 @@ class Interface:
         self.widgets = widgets
 
         # Подключаем downloader
-        self.downloader = Downloader(list_urls[0], self.progressbar, self.percentage_label)
+        self.downloader = Downloader(list_urls[0]["url"], self.widgets) #self.progressbar, self.percentage_label)
 
     def create_widgets(self):
         # Block enter url
         self.frame_link = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
+        self.widgets["Frames"]["frame_link"] = self.frame_link
 
         # Enter url: text, input, button
         self.text_link = customtkinter.CTkLabel(self.frame_link, text="URL: ", text_color=self.default_color_theme)
+        self.widgets["Labels"]["text_link"] = self.text_link
 
         # url_var = tk.StringVar(value="Enter video link")
-        list_urls = [url["url"] for url in listUrls.list_urls]
-        self.input_link = customtkinter.CTkComboBox(self.frame_link,
-                                                    values=list_urls,
+        urls = [url["url"] for url in list_urls]
+        self.widgets["Combobox_url"] = self.input_link = customtkinter.CTkComboBox(self.frame_link,
+                                                    values=urls,
                                                     width=250,
                                                     border_color=self.default_color_theme,
                                                     button_color=self.default_color_theme,
@@ -67,51 +69,51 @@ class Interface:
         self.input_link.bind("<Button-1>", lambda event: self.clear_variable())
         self.input_link.bind("<FocusOut>", lambda event: self.show_placeholder())
 
-        self.button_Clear = customtkinter.CTkButton(self.frame_link, text="X", width=10, command=self.clear_all)
-        self.button_OK = customtkinter.CTkButton(
+        self.widgets["Buttons"]["button_Clear"] = self.button_Clear = customtkinter.CTkButton(self.frame_link, text="X", width=10, command=self.clear_all)
+        self.widgets["Buttons"]["button_OK"] = self.button_OK = customtkinter.CTkButton(
             self.frame_link, text="OK", width=10,
             command=self.show_data_video)
 
         # Data about video
-        self.frame_data_video = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
+        self.widgets["Frames"]["frame_data_video"] = self.frame_data_video = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.text_title = customtkinter.CTkLabel(self.frame_data_video, text="Name: ", text_color=self.default_color_theme)  # , text_color="blue"
+        self.widgets["Labels"]["text_title"] = self.text_title = customtkinter.CTkLabel(self.frame_data_video, text="Name: ", text_color=self.default_color_theme)  # , text_color="blue"
 
-        self.video_name = customtkinter.CTkLabel(self.frame_data_video, width=280, text="", justify="left")
+        self.widgets["Labels"]["video_name"] = self.video_name = customtkinter.CTkLabel(self.frame_data_video, width=280, text="", justify="left")
 
-        self.text_autor = customtkinter.CTkLabel(self.frame_data_video, text="Autor: ", text_color=self.default_color_theme)  # , text_color="blue"
+        self.widgets["Labels"]["text_autor"] = self.text_autor = customtkinter.CTkLabel(self.frame_data_video, text="Autor: ", text_color=self.default_color_theme)  # , text_color="blue"
 
-        self.video_author = customtkinter.CTkLabel(self.frame_data_video, text="", width=280)
+        self.widgets["Labels"]["video_author"] = self.video_author = customtkinter.CTkLabel(self.frame_data_video, text="", width=280)
 
-        self.text_image = customtkinter.CTkLabel(self.frame_data_video, text="Image: ", text_color=self.default_color_theme)
+        self.widgets["Labels"]["text_image"] = self.text_image = customtkinter.CTkLabel(self.frame_data_video, text="Image: ", text_color=self.default_color_theme)
 
-        self.video_image = customtkinter.CTkLabel(self.frame_data_video, text="", compound="bottom", height=80)
+        self.widgets["Labels"]["video_image"] = self.video_image = customtkinter.CTkLabel(self.frame_data_video, text="", compound="bottom", height=80)
         # self.app.columnconfigure(1, weight=1)
 
         # Progress percentage
-        self.frame_download = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
+        self.widgets["Frames"]["frame_download"] = self.frame_download = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
 
-        self.percentage_label = customtkinter.CTkLabel(self.frame_download, text="Downloaded: 0 %")
+        self.widgets["Labels"]["percentage_label"] = self.percentage_label = customtkinter.CTkLabel(self.frame_download, text="Downloaded: 0 %")
         # self.percentage_download = customtkinter.CTkLabel(self.frame_download, text="85")
 
 
-        self.progressbar = customtkinter.CTkProgressBar(self.frame_download, width=200, height=5)
+        self.widgets["Progressbar"] = self.progressbar = customtkinter.CTkProgressBar(self.frame_download, width=200, height=5)
         self.progressbar.set(0)
 
 
         # to review: is it really necessary to click the button when app is just started?
-        self.button_download = customtkinter.CTkButton(
+        self.widgets["Buttons"]["button_download"] = self.button_download = customtkinter.CTkButton(
             self.frame_download,
             text="Download",
             state="disabled",
             command=lambda: self.download_video(),
         )
 
-        self.frame_path_download = customtkinter.CTkFrame(self.frame_download)
+        self.widgets["Frames"]["frame_path_download"] = self.frame_path_download = customtkinter.CTkFrame(self.frame_download)
 
 
-        self.path_text = customtkinter.CTkLabel(self.frame_path_download, text="Path to file: ")
-        self.path_to_video = customtkinter.CTkTextbox(
+        self.widgets["Labels"]["path_text"] = self.path_text = customtkinter.CTkLabel(self.frame_path_download, text="Path to file: ")
+        self.widgets["Textbox_path_to_video"] = self.path_to_video = customtkinter.CTkTextbox(
             self.frame_path_download,
             text_color="steelblue1",
             activate_scrollbars=False,
@@ -123,15 +125,18 @@ class Interface:
         )
 
         # widgets by setting colors
-        self.frame_setting_window = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
+        self.widgets["Frames"]["frame_setting_window"] = self.frame_setting_window = customtkinter.CTkFrame(self.app, border_color=self.default_color_theme, border_width=2)
         # self.radio_var = tk.IntVar(value=1)
-        self.text_radiobutton = customtkinter.CTkLabel(self.frame_setting_window, text="Select theme: ", text_color=self.default_color_theme)
-        # self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
-        # self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
+        self.widgets["Labels"]["text_radiobutton"] = self.text_radiobutton = customtkinter.CTkLabel(self.frame_setting_window, text="Select theme: ", text_color=self.default_color_theme)
+        # self.widgets["RadioButton"]["themes_2"] = self.themes_2 = customtkinter.CTkRadioButton(self.app, text="Dark", variable=self.radio_var, value=1, command=self.set_theme)
+        # self.widgets["RadioButton"]["themes_1"] = self.themes_1 = customtkinter.CTkRadioButton(self.app, text="Light", variable=self.radio_var, value=2, command=self.set_theme)
         # self.app.columnconfigure(0, weight=1)
 
         self.switch_var = customtkinter.StringVar(value="on")
-        self.switch = customtkinter.CTkSwitch(self.frame_setting_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+        self.widgets["Switch"] = self.switch = customtkinter.CTkSwitch(self.frame_setting_window, text="Light/Dark", variable=self.switch_var, onvalue="on", offvalue="off", command=self.set_theme)
+
+        # import test_module_widgets
+        # test_module_widgets.test_module_widgets(self.widgets)
 
     def place_widgets(self):
         # widgets by entered url video
@@ -190,14 +195,15 @@ class Interface:
 
     # todo: this really should belongs to another class "App"
     def show_app(self):
-        """ todo: short description"""
+        """ App window display"""
+        self.create_widgets()
         self.place_widgets()
         self.center_window()
         Interface.app.mainloop()
 
     # todo: this is too...
     def center_window(self):
-        """ todo: short description"""
+        """ App window centering"""
         screen_width = self.app.winfo_screenwidth()
         screen_height = self.app.winfo_screenheight()
 
@@ -207,8 +213,6 @@ class Interface:
         self.app.geometry(f"{self.app_width}x{self.app_height}+{x}+{y}")
 
 
-    # to review: do you really need this to check your links? 
-    # pytube already has it's own built-in link validation
     @staticmethod
     def is_youtube_url(url_video):
         # Регулярное выражение для проверки ссылок YouTube
@@ -256,15 +260,14 @@ class Interface:
             self.input_link.set("Enter video link")
 
     def show_data_video(self):
-        """  sdfsdfs  """
-        value = self.input_link.get()
+        """  displaying video data  """
+        current_url = self.input_link.get()
         self.clear_data()
-        print("Selected value:", value)
-        if self.is_youtube_url(value):
+        print("Selected value:", current_url)
+        if self.is_youtube_url(current_url):
             # self.clear_data()
-            # self.video_downloaded = Downloader.get_data_video(value, progress_callback=self.set_percentage
-            #                                                 )
-            data_video = self.downloader.get_data_video(self)
+            # self.video_downloaded = Downloader.get_data_video(value, progress_callback=self.set_percentage)
+            data_video = self.downloader.get_data_video()
             print("data_video", [data_video])
             if data_video:
                 self.show_video_title(data_video["title"])
@@ -356,13 +359,7 @@ class Interface:
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
 
-    # def set_percentage(self, percentage):
-    #     # current_text = self.text_percentage_download.cget("text")
-    #     print("%: ", percentage)
-    #     self.text_percentage_download.configure(text=f"Downloaded: {percentage} %")
-    #     self.progressbar.set(percentage / 100)
-    #     self.text_percentage_download.update()
-    #     # self.progressbar
+
 
     def is_download(self):
         pass

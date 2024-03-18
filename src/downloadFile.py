@@ -6,28 +6,31 @@ import windowMessage
 class Downloader:
     """todo: short description """
     url_video = ""
+    widgets = {}
 
     # to review: it seems like too complicated logic for a simple constuctor
     # check, if you really need it
-    def __init__(self, url, progressbar, percentage):
-        self.progressbar = progressbar
-        self.percentage = percentage
-        print("class - url", url)
-        if url == "":
-            return
-        else:
-            self.url_video = url
-            try:
-                self.yt = YouTube(self.url_video,
-                                  on_progress_callback=self.on_progress,
-                                  on_complete_callback=self.on_complete
-                                  ) #, use_oauth=True, allow_oauth_cache=True)
-            except Exception as e:
-                windowMessage.open_window_error("Create object Youtube" + str(e))
+    def __init__(self, url, widgets): # progressbar, percentage):
+        self.widgets = widgets
+        self.progressbar = self.widgets["Progressbar"]
+        self.url_video = url
+        try:
+            self.yt = YouTube(self.url_video,
+                              on_progress_callback=self.on_progress,
+                              on_complete_callback=self.on_complete
+                              ) #, use_oauth=True, allow_oauth_cache=True)
+        except Exception as e:
+            windowMessage.open_window_error("Create object Youtube" + str(e))
+
+
+        # self.percentage = percentage
+
+        # self.url_video = self.widgets["Combobox_url"].get()
+
 
 
     def get_data_video(self):
-        print("class Download", self.url_video)
+        print("Url: ", self.url_video)
         try:
             title = self.yt.title
             author = self.yt.author
@@ -36,7 +39,7 @@ class Downloader:
             return video_data
         except:
             windowMessage.open_window_error("YouTube link is invalid")
-            return None
+            # return None
 
 
     def download_video(self):
@@ -53,7 +56,7 @@ class Downloader:
         bytes_downloaded = total_size - bytes_remaining
         percentage = (bytes_downloaded / total_size) * 100
         # self.progress_callback(int(percentage))
-        print(f"Downloaded: {percentage: .2f}%")
+        # print(f"Downloaded: {percentage: .2f}%")
         print("%: ", percentage)
         self.percentage.configure(text=f"Downloaded: {percentage} %")
         self.progressbar.set(percentage / 100)

@@ -1,7 +1,4 @@
 widgets = {
-    "Combobox_url": {
-        "input_link": None
-    },
     "Frames": {
         "frame_link": None,
         "frame_data_video": None,
@@ -26,10 +23,9 @@ widgets = {
         "button_OK": None,
         "button_download": None,
     },
-    "Progressbar": {
-        "progressbar": None,
-    },
-    "Textbox_path_to_video": None
+    "Progressbar": None,
+    "Textbox_path_to_video": None,
     "switch": None,
 
+    "Combobox_url": None
 }
