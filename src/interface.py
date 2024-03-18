@@ -1,5 +1,6 @@
 # todo: rewrite import for importing parts of libraries, not full libraries
 # example:
+import os
 from os import path
 import tkinter as tk
 import customtkinter
@@ -38,9 +39,10 @@ class Interface:
     # todo: remove widget creation into some method, e.g. create_widgets() or so   
     def __init__(self, widgets):
         self.widgets = widgets
+        self.current_url = list_urls[0]["url"]
 
         # Подключаем downloader
-        self.downloader = Downloader(list_urls[0]["url"], self.widgets) #self.progressbar, self.percentage_label)
+        self.downloader = Downloader(self.widgets) #self.progressbar, self.percentage_label)
 
     def create_widgets(self):
         # Block enter url
@@ -257,7 +259,8 @@ class Interface:
 
     def button_download_state(self, state_button):
         """ function makes state of button disable/normal """
-        self.button_download.configure(state=state_button)
+        self.button_download.configure(state=("normal" if state_button else "disabled"))
+
 
     def show_placeholder(self):
         if self.input_link.get() == "":
@@ -265,28 +268,24 @@ class Interface:
 
     def show_data_video(self):
         """  displaying video data  """
-        current_url = self.input_link.get()
-        if current_url == "" or current_url == "Enter video link":
+        self.current_url = self.input_link.get()
+        if self.current_url == "" or self.current_url == "Enter video link":
             showerror("Error...", "YouTube link is invalid")
             return
         self.clear_data()
-        print("Selected value:", current_url)
+        print("Selected value:", self.current_url)
         """ link validation url and get video data """
-        if self.is_youtube_url(current_url):
-            # self.video_downloaded = Downloader.get_data_video(value, progress_callback=self.set_percentage)
-            # self.downloader.get_data_video()
-            # check video access
-            access = self.downloader.check_video_access()
-            print("Access: ", access)
-            # print("data_video", [data_video])
-            # if data_video:
-            #     self.show_video_title(data_video["title"])
-            #     self.show_video_author(data_video["author"])
-            #     self.show_video_image(data_video["image"])
-            #     self.button_download_state("normal")
+        if self.is_youtube_url(self.current_url):
+            data_video = self.downloader.get_data_video()
+            print("data_video", [data_video])
+            if data_video:
+                self.show_video_title(data_video["title"])
+                self.show_video_author(data_video["author"])
+                self.show_video_image(data_video["image"])
+                self.button_download_state(data_video["access"])
         else:
             # self.clear_data()
-            showerror("Url video invalid!\nEnter correct link.")
+            showerror("Error...", "Url video invalid!\nEnter correct link.")
 
     def clear_variable(self):
         if self.input_link.get() == "Enter video link":
@@ -304,7 +303,7 @@ class Interface:
         self.video_name.configure(text="")
         self.video_author.configure(text="")
         self.video_image.configure(image=None)
-        self.button_download_state("disabled")
+        self.button_download_state(False)
         self.clear_data_download()
 
     def clear_all(self):
@@ -312,12 +311,11 @@ class Interface:
         self.clear_data()
 
     def download_video(self):
-        # print(self.video_downloaded.get_data_video())
-        is_download=self.video_downloaded.download_video()
+        """ download video and display path to video-file"""
+        is_download=self.downloader.download_video()
         if is_download:
             self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
             path_video = path.dirname(is_download)
-            print("is_download: ", path_video)
             self.show_path_to_file(path_video)
         else:
             self.progressbar.set(0)
@@ -363,14 +361,9 @@ class Interface:
                 self.set_color_button("lightblue")
 
 
-                
     def set_color_button(self, color_button):
         self.button_OK.configure(fg_color=color_button)
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
 
 
-
-    def is_download(self):
-        pass
-                
