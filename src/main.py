@@ -1,7 +1,8 @@
 import interface
+from widgets import widgets
 
 
-myApp = interface.Interface()
-
+# create main GUI window
+myApp = interface.Interface(widgets)
 myApp.show_app()
 
