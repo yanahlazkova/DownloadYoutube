@@ -1,5 +1,5 @@
 import os.path
-
+from os import path
 from pytube import YouTube
 from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter.messagebox import showinfo, showerror
@@ -15,6 +15,7 @@ class Downloader:
     yt = None
     access = True
     file_name = ""
+    path_file = "videos"
 
     # to review: it seems like too complicated logic for a simple constuctor
     # check, if you really need it
@@ -53,18 +54,19 @@ class Downloader:
 
         try:
             self.file_name = self.yt.title
-            self.video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url, "access": self.access}
-            return self.video_data
+            video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
+                          "access": self.access}
+            return video_data
         except Exception as e:
             showerror("Error..", "YouTube link is invalid")
             # return None
 
     def download_video(self):
         """ Проверим сколько файлов уже загружено с таким названием"""
-        self.check_video_exists()
+        video_name = self.check_video_exists()
         try:
             stream = self.yt.streams.get_highest_resolution()
-            is_download = stream.download("videos", skip_existing=False, filename=f"{self.file_name}.pm4")
+            is_download = stream.download("videos", skip_existing=False, filename=f"{video_name}.mp4")
             return is_download
         except VideoUnavailable as e:
             showerror("Error...", "Video url is unavaialable" + str(e))
@@ -84,14 +86,16 @@ class Downloader:
     # @staticmethod
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
-
-        print("path: ", path_file)
+        self.path_file = path.dirname(path_file)
+        print("path: ", self.path_file)
 
     def check_video_exists(self):
         """ checking if the file exists """
         count = 0
         new_file_name = self.file_name
-        while (os.path.exists(os.path.join("videos", new_file_name))):
+        print("file_name", new_file_name)
+        while os.path.exists(os.path.join(self.path_file, new_file_name + ".mp4")):
             count += 1
             new_file_name = f"{self.file_name} ({count})"
-        self.file_name = new_file_name
+            print(new_file_name)
+        return new_file_name
