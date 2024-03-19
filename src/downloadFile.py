@@ -107,7 +107,7 @@ class Downloader:
     def show_path_to_file(self):
         """ display path to video-file """
         self.widgets["Textbox_path_to_video"].delete("1.0", END)
-        self.widgets["Textbox_path_to_video"].insert("1.0", self.is_download)
+        self.widgets["Textbox_path_to_video"].insert("1.0", path.dirname(self.is_download))
         self.widgets["Textbox_path_to_video"].bind("<Button-1>", self.open_directory)
 
 
