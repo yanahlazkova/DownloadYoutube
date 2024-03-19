@@ -1,5 +1,3 @@
-# todo: rewrite import for importing parts of libraries, not full libraries
-# example:
 from os import path, startfile
 import tkinter as tk
 import customtkinter
@@ -134,7 +132,7 @@ class Interface:
             wrap="word",
             height=55,
             width=335,
-            cursor="hand2"
+            cursor="hand2",
         )
 
         # widgets by setting colors
@@ -329,23 +327,18 @@ class Interface:
 
     def download_video(self):
         """ download video """
-        is_download = self.downloader.download_video()
+        is_download = self.downloader.start_download_thread()
+        print("is_download", is_download)
         if is_download:
-            self.frame_path_download.grid(row=3, column=0, padx=20, sticky="we")
             path_video = path.dirname(is_download)
             self.show_path_to_file(path_video)
         else:
             self.progressbar.set(0)
 
-    def show_path_to_file(self, path):
-        """ display path to video-file """
-        self.path_to_video.delete("1.0", tk.END)
-        self.path_to_video.insert("1.0", path)
-        self.path_to_video.bind("<Button-1>", lambda event: self.open_directory(path))
+    # def show_path_to_file(self, path):
 
-    @staticmethod
-    def open_directory(path):
-        startfile(path)
+
+
 
     # def set_theme(self):
     #     level = self.radio_var.get()
