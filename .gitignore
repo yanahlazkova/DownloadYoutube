@@ -1,2 +1,7 @@
-videos/
 .idea/
+videos/
+test.py
+
+__pychache__
+src/__pychache__
+src/downloadYoutube - Ярлык.lnk
