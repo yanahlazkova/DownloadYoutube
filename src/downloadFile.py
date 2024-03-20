@@ -8,7 +8,8 @@ from threading import Thread
 
 class Downloader:
     """ download video, display video data, display progressbar """
-    url_video = ""
+    # todo: move some of this default values to constructor 
+    # url_video = ""
     widgets = {}
     yt = None
     access = True
@@ -18,6 +19,8 @@ class Downloader:
 
     def __init__(self, widgets):
         self.widgets = widgets
+        # like so:
+        self.url_video = ''
 
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
@@ -93,14 +96,11 @@ class Downloader:
         bytes_downloaded = total_size - bytes_remaining
         percentage = (bytes_downloaded / total_size) * 100
         print("%: ", percentage)
-        # self.widgets["Labels"]["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
-        # self.widgets["Labels"]["percentage_label"].update()
-        # self.widgets["Progressbar"].set(percentage / 100)
 
-        self.widgets["Labels"]["percentage_label"].after(0, lambda: self.update_progressbar(percentage))
+        self.widgets["percentage_label"].after(0, lambda: self.update_progressbar(percentage))
 
     def update_progressbar(self, percentage):
-        self.widgets["Labels"]["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
+        self.widgets["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
         self.widgets["Progressbar"].set(percentage / 100)
 
     def on_complete(self, stream, path_file):
@@ -108,7 +108,7 @@ class Downloader:
         # self.path_file = path.dirname(path_file)
         # print("path: ", self.path_file)
 
-        self.widgets['Frames']["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
+        self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
 
     def show_path_to_file(self):
         """ display path to video-file """

@@ -1,8 +1,7 @@
 from interface import Interface
-from widgets import widgets
-
+# update: moves widgets to Interface, where it should belongs to  
 
 # create main GUI window
-myApp = Interface(widgets)
-myApp.show_app()
+app_interface = Interface(title="YouTube Downloader", width=400, height=700)
+app_interface.show_interface()
 
