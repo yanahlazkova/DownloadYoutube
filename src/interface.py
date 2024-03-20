@@ -10,14 +10,11 @@ from convertText import split_text_by_width
 from PIL import Image, ImageTk
 from urllib.request import urlopen
 
-# todo: this code can be easily managed by creating class "App", "MainApp" or "Window"
-# in your main.py file
-# important: remove unneccesary / unused comments like these:
+
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
-# todo: each class (and eventually - it's methods) has to have a brief description below it's name, like so:
 class Interface:
     """ creates interface, place widgets into UI """
     app = customtkinter.CTk()

@@ -93,8 +93,14 @@ class Downloader:
         bytes_downloaded = total_size - bytes_remaining
         percentage = (bytes_downloaded / total_size) * 100
         print("%: ", percentage)
+        # self.widgets["Labels"]["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
+        # self.widgets["Labels"]["percentage_label"].update()
+        # self.widgets["Progressbar"].set(percentage / 100)
+
+        self.widgets["Labels"]["percentage_label"].after(0, lambda: self.update_progressbar(percentage))
+
+    def update_progressbar(self, percentage):
         self.widgets["Labels"]["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
-        self.widgets["Labels"]["percentage_label"].update()
         self.widgets["Progressbar"].set(percentage / 100)
 
     def on_complete(self, stream, path_file):
