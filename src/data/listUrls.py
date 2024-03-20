@@ -1,5 +1,3 @@
-# todo: create "static" folder and leave this code there
-
 list_urls = [
   {
       'url': 'https://youtu.be/tNSjC0sZiy8',

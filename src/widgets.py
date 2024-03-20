@@ -1,5 +1,3 @@
-# update: remaped widget names for simplicity sakes
-
 widgets = {
     # frames
     "frame_link": None,

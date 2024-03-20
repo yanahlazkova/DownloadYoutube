@@ -4,23 +4,22 @@ from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter import END
 from tkinter.messagebox import showinfo, showerror
 from threading import Thread
+from helpers import *
 
 
 class Downloader:
     """ download video, display video data, display progressbar """
-    # todo: move some of this default values to constructor 
-    # url_video = ""
     widgets = {}
-    yt = None
-    access = True
-    file_name = ""
-    path_file = "videos"
-    is_download = ""
+
 
     def __init__(self, widgets):
         self.widgets = widgets
-        # like so:
-        self.url_video = ''
+        self.url_video = ""
+        self.yt = None
+        self.access = True
+        self.file_name = ""
+        self.path_file = "videos"
+        self.is_download = ""
 
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
@@ -62,12 +61,10 @@ class Downloader:
             showerror("Error..", f"YouTube link is invalid\n({e})")
             # return None
 
-
     def start_download_thread(self):
         """Starts the download video process in a separate thread."""
         download_thread = Thread(target=self.download_video_thread)
         download_thread.start()
-
 
     def download_video_thread(self):
         """Method to download the video in a separate thread."""
@@ -98,6 +95,8 @@ class Downloader:
         print("%: ", percentage)
 
         self.widgets["percentage_label"].after(0, lambda: self.update_progressbar(percentage))
+        # Установить state кнопки Download (disable/normal)
+        Helpers.set_button_state(self.widgets["button_download"], False)
 
     def update_progressbar(self, percentage):
         self.widgets["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
@@ -105,10 +104,11 @@ class Downloader:
 
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
-        # self.path_file = path.dirname(path_file)
-        # print("path: ", self.path_file)
+
 
         self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
+        # Установить state кнопки Download (disable/normal)
+        Helpers.set_button_state(self.widgets["button_download"], True)
 
     def show_path_to_file(self):
         """ display path to video-file """
@@ -116,11 +116,9 @@ class Downloader:
         self.widgets["Textbox_path_to_video"].insert("1.0", path.dirname(self.is_download))
         self.widgets["Textbox_path_to_video"].bind("<Button-1>", self.open_directory)
 
-
     # @staticmethod
     def open_directory(self, event):
         """Открывает папку с загруженным файлом."""
-        # directory = path.dirname(self.is_download)
         print(self.is_download)
         try:
             startfile(path.dirname(self.is_download))
