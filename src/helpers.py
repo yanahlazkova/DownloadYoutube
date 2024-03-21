@@ -1,13 +1,16 @@
 """ class for helper methods """
-from tkinter.font import Font
+from random import randrange, choice
 from widgets import widgets
 from customtkinter import CTk
 import re
 from tkinter.messagebox import showerror
 
 class Helpers:
-    def split_text_by_width(self, text: str, width: int, font: Font):
-        """ конвертирует текст в несколько строк """
+    @staticmethod
+    def split_text_by_width(widget, text: str):
+        """ конвертация текста для отображения в несколько строк """
+        font = widget.cget("font")
+        width = widget.cget("width")
         lines = []
         current_line = ""
         for word in text.split():
@@ -59,8 +62,15 @@ class Helpers:
 
     @staticmethod
     def check_link(current_url: str, placeholder: str):
+        """ проверка введенных данных в combobox"""
         if current_url == "" or current_url == placeholder or (not Helpers.is_youtube_url(current_url)):
             showerror("Error...", "YouTube link is invalid\n\nEnter correct link.")
             return False
         else:
             return True
+
+    @staticmethod
+    def get_random_url(list_video: list):
+        """ получение рандомного url """
+        random_url = choice(list_video)
+        return random_url["url"]

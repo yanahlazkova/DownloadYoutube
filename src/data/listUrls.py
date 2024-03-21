@@ -12,10 +12,10 @@ list_urls = [
     'author': 'developedbyed'
   },
   {
-    'url': 'https://youtu.be/tNSjC0sZiy8',
-    'title': 'Скачиваем видео с Youtube при помощи Python',
+    'url': 'https://youtu.be/cW8QxGmG1oc?list=PLrGkYdxCeozBIiUhqByEe281BHrpOJjvG',
+    'title': '3. Неправильные глаголы. Тренажер 3 (3, 4, 5 группы) #SmartAlex100%English, #английскийязык',
     'image': '',
-    'author': 'DevHacker'
+    'author': 'Smart Alex 100% English'
   },
   {
     'url': 'https://youtu.be/3DueZjymXAA',

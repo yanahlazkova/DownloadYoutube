@@ -104,9 +104,8 @@ class Downloader:
 
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
-
-
         self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
+        self.widgets["path_text"].configure(text="Video downloaded, path to file:")
         # Установить state кнопки Download (disable/normal)
         Helpers.set_button_state(self.widgets["button_download"], True)
 

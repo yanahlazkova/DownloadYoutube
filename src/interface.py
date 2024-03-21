@@ -7,7 +7,6 @@ from tkinter.messagebox import showerror
 from io import BytesIO
 from data.listUrls import list_urls
 from downloadFile import Downloader
-from convertText import split_text_by_width
 from PIL import Image, ImageTk
 from urllib.request import urlopen
 
@@ -34,7 +33,8 @@ class Interface:
         self.app.title(title)
         self.app_width = width
         self.app_height = height
-        self.current_url = list_urls[0]["url"]
+        self.current_url = Helpers.get_random_url(list_urls)
+        print("self.current_url", self.current_url)
 
         # Подключаем downloader
         self.downloader = Downloader(self.widgets)
@@ -50,9 +50,11 @@ class Interface:
                                                                                       text_color=self.default_color_theme)
 
         urls = [url["url"] for url in list_urls]
+        combobox_var = StringVar(value=self.current_url)
         self.widgets["Combobox_url"] = self.input_link = CTkComboBox(
             self.frame_link,
             values=urls,
+            variable=combobox_var,
             width=250,
             border_color=self.default_color_theme,
             button_color=self.default_color_theme,
@@ -198,16 +200,12 @@ class Interface:
 
     def show_video_title(self, title):
         """ конвертация Названия видео для отображения в несколько строк"""
-        font = self.video_name.cget("font")
-        width = self.video_name.cget("width")
-        converted_text = split_text_by_width(title, width, font)
+        converted_text = Helpers.split_text_by_width(widget=widgets['video_name'], text=title)
         self.video_name.configure(text=converted_text)
 
     def show_video_author(self, author):
         """ display author video"""
-        font = self.video_author.cget("font")
-        width = self.video_author.cget("width")
-        converted_text = split_text_by_width(author, width, font)
+        converted_text = Helpers.split_text_by_width(widget=widgets['video_author'], text=author)
         self.video_author.configure(text=converted_text)
 
     def show_video_image(self, image):
