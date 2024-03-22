@@ -1,13 +1,13 @@
 import tkinter as tk
 from customtkinter import CTk, CTkButton, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
-    StringVar, set_default_color_theme, set_appearance_mode
+    StringVar, set_default_color_theme, set_appearance_mode, CTkRadioButton
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
 from downloadFile import Downloader
 
 set_appearance_mode("Dark")
-set_default_color_theme("green")
+set_default_color_theme("./themes/green.json")
 
 
 class Interface:
@@ -143,6 +143,24 @@ class Interface:
                                                          variable=self.switch_var, onvalue="on",
                                                          offvalue="off", command=self.set_theme)
 
+        self.radio_var = tk.IntVar(value=1)
+        self.themes_blue = CTkRadioButton(self.frame_setting_window,
+                                          text="blue",
+                                          radiobutton_height=15,
+                                          radiobutton_width=15,
+                                          border_width_checked=5,
+                                          border_width_unchecked=3,
+                                          variable=self.radio_var, value=1,
+                                          command=self.set_color_theme)
+        self.themes_green = CTkRadioButton(self.frame_setting_window,
+                                           text="green",
+                                           radiobutton_height=15,
+                                           radiobutton_width=15,
+                                           border_width_checked=5,
+                                           border_width_unchecked=3,
+                                           variable=self.radio_var, value=2,
+                                           command=self.set_color_theme)
+
     def place_widgets(self):
         # widgets by entered url video
         self.app.grid_columnconfigure(0, weight=1)
@@ -187,6 +205,9 @@ class Interface:
         self.frame_setting_window.grid(row=3, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
 
         self.text_radiobutton.grid(row=0, column=0, pady=5, sticky="e")
+
+        self.themes_blue.grid(row=1, column=2, pady=5, padx=10)
+        self.themes_green.grid(row=2, column=2, pady=5, padx=10)
 
         self.switch.grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
@@ -238,11 +259,12 @@ class Interface:
         """ download video """
         self.progressbar.set(0)
         self.progressbar.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
+        self.percentage_label.configure(text="Выполняется загрузка")
         Helpers.set_button_state(self.button_download, False)
         self.downloader.start_download_thread()
 
     def set_theme(self):
-        """ установка темы """
+        """ установка светлой / темной темы """
         color = self.switch_var.get()
         match color:
             case "on":
@@ -262,3 +284,17 @@ class Interface:
         self.button_OK.configure(fg_color=color_button)
         self.button_download.configure(fg_color=color_button)
         self.button_Clear.configure(fg_color=color_button)
+
+    def set_color_theme(self):
+        level = self.radio_var.get()
+        match level:
+            case 1:
+                print("blue")
+                set_default_color_theme("./themes/blue.json")
+                self.app.update()
+
+            case 2:
+                print("green")
+                set_default_color_theme("./themes/green.json")
+                self.app.update()
+
