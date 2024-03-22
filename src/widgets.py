@@ -2,6 +2,7 @@ widgets = {
     # frames
     "frame_link": None,
     "frame_data_video": None,
+    "frame_basic_download": None,
     "frame_download": None,
     "frame_path_download": None,
     "frame_setting_window": None,

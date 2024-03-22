@@ -39,7 +39,7 @@ class Downloader:
             print("Видео доступно.")
             return True
         except VideoUnavailable as e:
-            showinfo("Access...", f"Video not available for download\n({e})")
+            self.widgets["percentage_label"].configure(text="Video not available for download", text_color="red")
             print("Видео недоступно.", e)
             return False
         except PytubeError as e:
@@ -79,6 +79,7 @@ class Downloader:
         image = Image.open(BytesIO(image_data))
         image.thumbnail((250, 250))
         photo_image = ImageTk.PhotoImage(image)
+
         self.widgets["video_image"].configure(image=photo_image)
 
         # Установить видимость кнопки Download(disable / normal)
@@ -109,6 +110,7 @@ class Downloader:
         """Method to download the video in a separate thread."""
         if self.access:
             self.download_video()
+            return True
         else:
             showerror("Error...", "Video is not available for download")
 
@@ -141,6 +143,7 @@ class Downloader:
         count_point = choice([3, 4])
         text_download = "Downloading" + "." * count_point
         self.widgets["percentage_label"].configure(text=f"{text_download}\n {percentage: .2f} %")
+
         self.widgets["Progressbar"].set(percentage / 100)
 
     def on_complete(self, stream, path_file):
@@ -150,6 +153,8 @@ class Downloader:
         self.widgets["path_text"].configure(text="Video downloaded, path to file:")
         # Установить state кнопки Download (disable/normal)
         Helpers.set_button_state(self.widgets["button_download"], True)
+        # Скрыть progressbar
+        self.widgets["Progressbar"].grid_remove()
 
     def show_path_to_file(self):
         """ display path to video-file """

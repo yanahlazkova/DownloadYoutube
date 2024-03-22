@@ -1,5 +1,5 @@
 """ class for helper methods """
-from random import randrange, choice
+from random import choice
 from widgets import widgets
 from customtkinter import CTk
 import re
@@ -74,15 +74,4 @@ class Helpers:
         """ получение рандомного url """
         random_url = choice(list_video)
         return random_url["url"]
-    @staticmethod
-    def get_random_number():
-        list_point = [2, 3]
-        return choice(list_point)
-    @staticmethod
-    def show_data_video(data_video):
-        """  displaying video data  """
-        self.show_video_title(data_video["title"])
-        self.show_video_author(data_video["author"])
-        self.show_video_image(data_video["image"])
-        # Установить state кнопки Download(disable / normal)
-        Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
+
