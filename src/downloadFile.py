@@ -5,6 +5,9 @@ from tkinter import END
 from tkinter.messagebox import showinfo, showerror
 from threading import Thread
 from helpers import *
+from PIL import Image, ImageTk
+from urllib.request import urlopen
+from io import BytesIO
 
 
 class Downloader:
@@ -45,6 +48,42 @@ class Downloader:
         except Exception as e:
             print("Произошла ошибка:", e)
             return False
+
+    def start_get_data_thread(self):
+        """Starts the download video process in a separate thread."""
+        download_thread = Thread(target=self.get_data_video_thread)
+        download_thread.start()
+
+    def get_data_video_thread(self):
+        """Method to download the video in a separate thread."""
+        if self.access:
+            video_data = self.get_data_video()
+            self.show_data_video(video_data)
+        else:
+            showerror("Error...", "Video is not available for download")
+
+    def show_data_video(self, data_video):
+        """Display video data."""
+        title = data_video["title"]
+        author = data_video["author"]
+        image = data_video["image"]
+
+        converted_text = Helpers.split_text_by_width(widget=widgets['video_name'], text=title)
+        self.widgets["video_name"].configure(text=converted_text)
+
+        converted_text = Helpers.split_text_by_width(widget=widgets['video_author'], text=author)
+        self.widgets["video_author"].configure(text=converted_text)
+
+        response = urlopen(image)
+        image_data = response.read()
+        image = Image.open(BytesIO(image_data))
+        image.thumbnail((250, 250))
+        photo_image = ImageTk.PhotoImage(image)
+        self.widgets["video_image"].configure(image=photo_image)
+
+        # Установить видимость кнопки Download(disable / normal)
+        Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
+
 
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
@@ -99,11 +138,14 @@ class Downloader:
         Helpers.set_button_state(self.widgets["button_download"], False)
 
     def update_progressbar(self, percentage):
-        self.widgets["percentage_label"].configure(text=f"Downloaded: {percentage: .2f} %")
+        count_point = choice([3, 4])
+        text_download = "Downloading" + "." * count_point
+        self.widgets["percentage_label"].configure(text=f"{text_download}\n {percentage: .2f} %")
         self.widgets["Progressbar"].set(percentage / 100)
 
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
+        self.widgets["percentage_label"].configure(text=f"Video downloaded")
         self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
         self.widgets["path_text"].configure(text="Video downloaded, path to file:")
         # Установить state кнопки Download (disable/normal)
@@ -126,7 +168,7 @@ class Downloader:
 
     def check_video_exists(self):
         """ checking if the file exists
-        if file exists, to add number at the end of the file"""
+        to add number at the end of the file"""
         count = 0
         new_file_name = self.file_name
         print("file_name", new_file_name)

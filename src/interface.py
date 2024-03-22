@@ -7,8 +7,7 @@ from tkinter.messagebox import showerror
 from io import BytesIO
 from data.listUrls import list_urls
 from downloadFile import Downloader
-from PIL import Image, ImageTk
-from urllib.request import urlopen
+
 
 
 set_appearance_mode("Dark")
@@ -26,6 +25,7 @@ class Interface:
         "blue": "./themes/blue.json",
         "dark-blue": "./themes/dark-blue.json"
     }
+    downloader = None
 
     def __init__(self, title: str, width: int, height: int):
         self.app = CTk()
@@ -37,7 +37,7 @@ class Interface:
         print("self.current_url", self.current_url)
 
         # Подключаем downloader
-        self.downloader = Downloader(self.widgets)
+        # self.downloader = Downloader(self.widgets)
 
     def create_widgets(self):
         # Block enter url
@@ -218,10 +218,10 @@ class Interface:
 
         self.video_image.configure(image=photo_image)
 
-    def set_button_download_state(self, state_button):
-        """ function makes state of button disable/normal """
-        self.button_download.configure(state=("normal" if state_button else "disabled"),
-                                       fg_color=("green" if state_button else "gray"))
+    # def Helpers.set_button_state(self, state_button):
+    #     """ function makes state of button disable/normal """
+    #     self.button_download.configure(state=("normal" if state_button else "disabled"),
+    #                                    fg_color=("green" if state_button else "gray"))
 
     def show_placeholder(self):
         """ функция отображает текст placeholder если поле для ввода пустое """
@@ -235,17 +235,18 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            data_video = self.downloader.get_data_video()
+            self.downloader = Downloader(self.widgets)
+            data_video = self.downloader.start_get_data_thread()
             print("data_video", [data_video])
-            self.show_data_video(data_video)
+            # self.show_data_video(data_video)
 
-    def show_data_video(self, data_video):
-        """  displaying video data  """
-        self.show_video_title(data_video["title"])
-        self.show_video_author(data_video["author"])
-        self.show_video_image(data_video["image"])
-        # Установить state кнопки Download(disable / normal)
-        Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
+    # def show_data_video(self, data_video):
+    #     """  displaying video data  """
+    #     self.show_video_title(data_video["title"])
+    #     self.show_video_author(data_video["author"])
+    #     self.show_video_image(data_video["image"])
+    #     # Установить state кнопки Download(disable / normal)
+    #     Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
 
 
     def clear_variable(self):
@@ -265,7 +266,7 @@ class Interface:
         self.video_name.configure(text="")
         self.video_author.configure(text="")
         self.video_image.configure(image=None)
-        self.set_button_download_state(False)
+        Helpers.set_button_state(self.button_download, False)
         self.clear_data_download()
 
     def clear_all(self):
