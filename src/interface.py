@@ -7,7 +7,7 @@ from data.listUrls import list_urls
 from downloadFile import Downloader
 
 set_appearance_mode("Dark")
-set_default_color_theme("./themes/green.json")
+set_default_color_theme("green")
 
 
 class Interface:
