@@ -7,7 +7,7 @@ from data.listUrls import list_urls
 from downloadFile import Downloader
 
 set_appearance_mode("Dark")
-set_default_color_theme("red")
+set_default_color_theme("blue")
 
 
 class Interface:
