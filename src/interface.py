@@ -6,8 +6,8 @@ from widgets import widgets
 from data.listUrls import list_urls
 from downloadFile import Downloader
 
-set_appearance_mode("Dark")
-set_default_color_theme("blue")
+set_appearance_mode("Dark(not sure)")
+set_default_color_theme("blue(not sure)")
 
 
 class Interface:
