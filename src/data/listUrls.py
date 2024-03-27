@@ -13,7 +13,7 @@ list_urls = [
   },
   {
     'url': 'https://youtu.be/cW8QxGmG1oc?list=PLrGkYdxCeozBIiUhqByEe281BHrpOJjvG',
-    'title': '3. Неправильные глаголы. Тренажер 3 (3, 4, 5 группы) #SmartAlex100%English, #английскийязык',
+    'title': '3. Неправильные глаголы. Тренажер 3 (3, 4, 5 группы) //SmartAlex100%English, //английскийязык',
     'image': '',
     'author': 'Smart Alex 100% English'
   },

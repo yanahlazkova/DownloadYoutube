@@ -1,0 +1,44 @@
+{
+    "ru": {
+        "text_link": "URL:",
+        "text_title": "Название:",
+        "text_autor": "Автор:",
+        "text_image": "Изображение:",
+        "path_text": "Директория:",
+        "text_radiobutton": "Выбор темы:",
+        "percentage_label": "Загружено:",
+
+        "button_download": "Загрузить",
+
+        "switch": "Светлая/Темная",
+        "Combobox_url": ""
+    },
+    "en": {
+        "text_link": "URL:",
+        "text_title": "Название:",
+        "text_autor": "Автор:",
+        "text_image": "Изображение:",
+        "path_text": "Директория:",
+        "text_radiobutton": "Выбор темы:",
+        "percentage_label": "Загружено:",
+
+        "button_download": "Загрузить",
+
+        "switch": "Светлая/Темная",
+        "Combobox_url": ""
+    },
+    "ua": {
+        "text_link": "URL:",
+        "text_title": "Название:",
+        "text_autor": "Автор:",
+        "text_image": "Изображение:",
+        "path_text": "Директория:",
+        "text_radiobutton": "Выбор темы:",
+        "percentage_label": "Загружено:",
+
+        "button_download": "Загрузить",
+
+        "switch": "Светлая/Темная",
+        "Combobox_url": ""
+    }
+}
