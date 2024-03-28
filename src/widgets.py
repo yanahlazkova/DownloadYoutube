@@ -2,7 +2,6 @@ widgets = {
     # frames
     "frame_link": None,
     "frame_data_video": None,
-    "frame_basic_download": None,
     "frame_download": None,
     "frame_path_download": None,
     "frame_setting_window": None,
@@ -10,7 +9,7 @@ widgets = {
     "text_link": None,
     "text_title": None,
     "video_name": None,
-    "text_autor": None,
+    "text_author": None,
     "video_author": None,
     "text_image": None,
     "path_text": None,
@@ -26,5 +25,5 @@ widgets = {
     "Textbox_path_to_video": None,
     "switch": None,
     "Combobox_url": None,
-    "Combobox_translate": None
+    "Combobox_language": None
 }
