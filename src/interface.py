@@ -1,5 +1,5 @@
 import tkinter as tk
-from customtkinter import CTk, CTkButton, CTkImage, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
+from customtkinter import CTk, CTkButton, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
     StringVar, set_default_color_theme, set_appearance_mode, CTkRadioButton
 from helpers import Helpers
 from widgets import widgets
@@ -94,7 +94,6 @@ class Interface:
         self.widgets["text_image"] = CTkLabel(self.widgets["frame_data_video"],
                                               text="Image: ",
                                               text_color=self.default_color_theme)
-
 
         self.widgets["video_image"] = CTkLabel(self.widgets["frame_data_video"],
                                                text="", compound="bottom",
@@ -262,22 +261,22 @@ class Interface:
         Helpers.set_button_state(self.widgets["button_download"], False)
         self.downloader.start_download_thread()
 
-    def set_theme(self):
-        """ установка светлой / темной темы """
-        color = self.switch_var.get()
-        match color:
-            case "on":
-                print("green", color)
-                # set_default_color_theme("green")
-
-                set_appearance_mode("Dark")
-                self.set_color_button("green")
-
-            case "off":
-                print("blue", color)
-                # set_default_color_theme("blue")
-                set_appearance_mode("Light")
-                self.set_color_button("lightblue")
+    # def set_theme(self):
+    #     """ установка светлой / темной темы """
+    #     color = self.switch_var.get()
+    #     match color:
+    #         case "on":
+    #             print("green", color)
+    #             # set_default_color_theme("green")
+    #
+    #             set_appearance_mode("Dark")
+    #             self.set_color_button("green")
+    #
+    #         case "off":
+    #             print("blue", color)
+    #             # set_default_color_theme("blue")
+    #             set_appearance_mode("Light")
+    #             self.set_color_button("lightblue")
 
     def set_color_button(self, color_button):
         self.widgets["button_OK"].configure(fg_color=color_button)
