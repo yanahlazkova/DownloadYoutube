@@ -1,3 +1,4 @@
+# import io
 from os import path, startfile
 from pytube import YouTube
 from pytube.exceptions import VideoUnavailable, PytubeError
@@ -5,9 +6,10 @@ from tkinter import END
 from tkinter.messagebox import showinfo, showerror
 from threading import Thread
 from helpers import *
-from PIL import Image, ImageTk
-from urllib.request import urlopen
+from PIL import Image
 from io import BytesIO
+from requests import get
+from customtkinter import CTkImage
 
 
 class Downloader:
@@ -66,7 +68,7 @@ class Downloader:
         """Display video data."""
         title = data_video["title"]
         author = data_video["author"]
-        image = data_video["image"]
+        image_url = data_video["image"]
 
         converted_text = Helpers.split_text_by_width(widget=widgets['video_name'], text=title)
         self.widgets["video_name"].configure(text=converted_text)
@@ -74,13 +76,11 @@ class Downloader:
         converted_text = Helpers.split_text_by_width(widget=widgets['video_author'], text=author)
         self.widgets["video_author"].configure(text=converted_text)
 
-        response = urlopen(image)
-        image_data = response.read()
-        image = Image.open(BytesIO(image_data))
-        image.thumbnail((250, 250))
-        photo_image = ImageTk.PhotoImage(image)
-
-        self.widgets["video_image"].configure(image=photo_image)
+        response = get(image_url)
+        image_data = Image.open(BytesIO(response.content))
+        image = CTkImage(image_data, size=(220, 150))
+        image.image = image_data
+        self.widgets["video_image"].configure(image=image)
 
         # Установить видимость кнопки Download(disable / normal)
         Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
@@ -89,7 +89,6 @@ class Downloader:
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
         self.access = self.check_video_availability()
-        print("Url: ", self.url_video)
 
         try:
             self.file_name = self.yt.title
@@ -165,7 +164,6 @@ class Downloader:
     # @staticmethod
     def open_directory(self, event):
         """Открывает папку с загруженным файлом."""
-        print(self.is_download)
         try:
             startfile(path.dirname(self.is_download))
         except Exception as e:

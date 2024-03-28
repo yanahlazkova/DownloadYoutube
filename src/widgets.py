@@ -25,5 +25,6 @@ widgets = {
     "Progressbar": None,
     "Textbox_path_to_video": None,
     "switch": None,
-    "Combobox_url": None
+    "Combobox_url": None,
+    "Combobox_translate": None
 }
