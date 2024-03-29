@@ -1,11 +1,12 @@
 import tkinter as tk
+from tkinter import filedialog
 from customtkinter import CTk, CTkButton, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
     StringVar, set_default_color_theme, set_appearance_mode, CTkRadioButton
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
 from downloadFile import Downloader
-import data.translate as translation
+from data.translate import translations as translation
 
 set_appearance_mode("Dark")
 set_default_color_theme("green")
@@ -23,7 +24,7 @@ class Interface:
         "dark-blue": "./themes/dark-blue.json"
     }
 
-    downloader = None
+    current_path = "videos"
 
     def __init__(self, title: str, width: int, height: int):
         self.app = CTk()
@@ -80,7 +81,7 @@ class Interface:
 
         self.widgets["text_title"] = CTkLabel(self.widgets["frame_data_video"],
                                               # text="Name: ",
-                                              text=translation.translations[self.current_language]["text_title"],
+                                              text=translation[self.current_language]["text_title"],
                                               text_color=self.default_color_theme, anchor="w")
 
         self.widgets["video_name"] = CTkLabel(self.widgets["frame_data_video"],
@@ -162,6 +163,13 @@ class Interface:
             dropdown_hover_color=self.default_color_theme,
             command=lambda selected_language: self.on_language_change(selected_language))
 
+        self.widgets["path_file"] = CTkLabel(
+            self.widgets["frame_setting_window"],
+            text_color="steelblue1",
+            text=translation[self.current_language]["path_file"] + self.current_path,
+            cursor="hand2")
+        self.widgets["path_file"].bind("<Button-1>", self.select_folder_to_save)
+
     def place_widgets(self):
         # widgets by entered url video
         self.app.grid_columnconfigure(0, weight=1)
@@ -218,6 +226,8 @@ class Interface:
         self.widgets["Combobox_language"].grid(row=1, column=1, pady=5, sticky="w")
 
         self.widgets["switch"].grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+
+        self.widgets["path_file"].grid(row=2, column=0, padx=10, pady=10, columnspan=2, sticky="w")
 
         Helpers.center_window(app=self.app, app_width=self.app_width, app_height=self.app_height)
 
@@ -303,15 +313,25 @@ class Interface:
 
     def on_language_change(self, selected_language):
         """Обработчик изменения языка"""
-        if selected_language in translation.translations:
+        if selected_language in translation:
             self.current_language = selected_language
             # Меняем placeholder
             self.placeholder = self.list_placeholder[self.current_language]
             self.change_placeholder()
             # Проходим по всем виджетам и обновляем тексты в соответствии с текущим языком
-            text_translates = translation.translations[self.current_language]
+            text_translates = translation[self.current_language]
             for widget_name in text_translates:
                 try:
                     self.widgets[widget_name].configure(text=text_translates[widget_name])
+                    if widget_name == "path_file":
+                        self.widgets["path_file"].configure(text=text_translates[widget_name] + self.current_path)
                 except:
                     print("error", widget_name)
+
+    def select_folder_to_save(self, event):
+        """Select folder to save video"""
+        self.current_path = filedialog.askdirectory(initialdir=self.current_path)
+        if self.current_path:
+            self.widgets["path_file"].configure(text=f"{translation[self.current_language]["path_file"]}{self.current_path}")
+            print(self.current_path)
+

@@ -149,7 +149,7 @@ class Downloader:
         showinfo("Downloaded", "Download is completed")
         self.widgets["percentage_label"].configure(text=f"Video downloaded")
         self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
-        self.widgets["path_text"].configure(text="Video downloaded, path to file:")
+        self.widgets["path_text"].configure(text="Video downloaded, open folder:")
         # Установить state кнопки Download (disable/normal)
         Helpers.set_button_state(self.widgets["button_download"], True)
         # Скрыть progressbar

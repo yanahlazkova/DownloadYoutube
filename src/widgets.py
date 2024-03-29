@@ -2,7 +2,6 @@ widgets = {
     # frames
     "frame_link": None,
     "frame_data_video": None,
-    "frame_data": None,
     "frame_download": None,
     "frame_path_download": None,
     "frame_setting_window": None,
@@ -17,6 +16,7 @@ widgets = {
     "video_image": None,
     "text_radiobutton": None,
     "percentage_label": None,
+    "path_file": None,
     # buttons
     "button_clear": None,
     "button_ok": None,
