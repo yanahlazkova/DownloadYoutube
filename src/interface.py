@@ -34,9 +34,8 @@ class Interface:
         self.current_url = Helpers.get_random_url(list_urls)
         self.list_language = ["ua", "en", "ru"]
         self.current_language = self.list_language[1]
-        self.list_placeholder = {"en": "Enter video link", "ua": "Вкажіть послинная на відео", "ru": "Вставьте ссылку на видео"}
+        self.list_placeholder = {"en": "Enter video link", "ua": "Вкажіть посилання на відео", "ru": "Вставьте ссылку на видео"}
         self.placeholder = self.list_placeholder[self.current_language]
-
         self.translate = {}
 
     def create_widgets(self):
@@ -221,17 +220,16 @@ class Interface:
         """ функция отображает текст placeholder если поле для ввода пустое """
         if self.widgets["Combobox_url"].get() == "":
             self.widgets["Combobox_url"].set(self.placeholder)
-            print("show_placeholder")
 
     def get_data_video(self, current_link):
         """  get video data  """
         self.clear_data()
         self.current_url = current_link  # self.widgets["Combobox_url"].get()
-        print("current_link", current_link)
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets).start_get_data_thread()
+            self.downloader = Downloader(self.widgets)
+            self.downloader.start_get_data_thread()
             # self.show_data_video(data_video)
 
     def clear_variable(self):
@@ -266,6 +264,7 @@ class Interface:
         self.widgets["Progressbar"].grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
         self.widgets["percentage_label"].configure(text="Выполняется загрузка")
         Helpers.set_button_state(self.widgets["button_download"], False)
+
         self.downloader.start_download_thread()
 
     def set_theme(self):
@@ -294,12 +293,10 @@ class Interface:
         placeholders = (self.list_placeholder[lang] for lang in self.list_placeholder)
 
         if self.widgets["Combobox_url"].get() in placeholders:
-            print("I'm here")
             self.widgets["Combobox_url"].set(self.placeholder)
 
 
     def on_language_change(self, selected_language):
-        print("Language is exists")
         """Обработчик изменения языка"""
         if selected_language in translation.translations:
             self.current_language = selected_language
