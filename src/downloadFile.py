@@ -23,8 +23,8 @@ class Downloader:
         self.yt = None
         self.access = True
         self.file_name = ""
-        self.path_file = "videos"
         self.is_download = ""
+        self.path_file = "videos"
 
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
@@ -119,7 +119,8 @@ class Downloader:
         video_name = self.check_video_exists()
         try:
             stream = self.streams.get_highest_resolution()
-            self.is_download = stream.download("videos", skip_existing=False, filename=f"{video_name}.mp4")
+            self.path_file = self.widgets["path_file"].cget("text")
+            self.is_download = stream.download(self.path_file, skip_existing=False, filename=f"{video_name}.mp4")
 
             self.show_path_to_file()
         except VideoUnavailable as e:

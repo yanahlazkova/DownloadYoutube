@@ -163,11 +163,19 @@ class Interface:
             dropdown_hover_color=self.default_color_theme,
             command=lambda selected_language: self.on_language_change(selected_language))
 
+        self.widgets["text_path_file"] = CTkLabel(
+            self.widgets["frame_setting_window"],
+            text=translation[self.current_language]["text_path_file"],
+            anchor="w"
+        )
+
         self.widgets["path_file"] = CTkLabel(
             self.widgets["frame_setting_window"],
             text_color="steelblue1",
-            text=translation[self.current_language]["path_file"] + self.current_path,
-            cursor="hand2")
+            text=self.current_path,
+            cursor="hand2",
+            anchor="w")
+
         self.widgets["path_file"].bind("<Button-1>", self.select_folder_to_save)
 
     def place_widgets(self):
@@ -223,11 +231,13 @@ class Interface:
         self.widgets["frame_setting_window"].grid_columnconfigure(0, weight=1)
         self.widgets["frame_setting_window"].grid_columnconfigure(1, weight=1)
 
+        self.widgets["switch"].grid(row=1, column=0, padx=10, sticky="w")
+
         self.widgets["Combobox_language"].grid(row=1, column=1, pady=5, sticky="w")
 
-        self.widgets["switch"].grid(row=1, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.widgets["text_path_file"].grid(row=2, column=0, padx=10, sticky="w")
 
-        self.widgets["path_file"].grid(row=2, column=0, padx=10, pady=10, columnspan=2, sticky="w")
+        self.widgets["path_file"].grid(row=3, column=0, padx=10, columnspan=2, sticky="w")
 
         Helpers.center_window(app=self.app, app_width=self.app_width, app_height=self.app_height)
 
@@ -323,8 +333,6 @@ class Interface:
             for widget_name in text_translates:
                 try:
                     self.widgets[widget_name].configure(text=text_translates[widget_name])
-                    if widget_name == "path_file":
-                        self.widgets["path_file"].configure(text=text_translates[widget_name] + self.current_path)
                 except:
                     print("error", widget_name)
 
@@ -332,6 +340,6 @@ class Interface:
         """Select folder to save video"""
         self.current_path = filedialog.askdirectory(initialdir=self.current_path)
         if self.current_path:
-            self.widgets["path_file"].configure(text=f"{translation[self.current_language]["path_file"]}{self.current_path}")
+            self.widgets["path_file"].configure(text=self.current_path)
             print(self.current_path)
 

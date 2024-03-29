@@ -8,7 +8,7 @@ translations = {
         "percentage_label": "Загружено: 0%",
         "button_download": "Загрузить",
         "switch": "Светлая/Темная",
-        "path_file": "Сохранить в: "
+        "text_path_file": "Сохранить в: "
     },
     "en": {
         "text_title": "Name:",
@@ -19,7 +19,7 @@ translations = {
         "percentage_label": "Downloaded:",
         "button_download": "Download",
         "switch": "Light/Dark",
-        "path_file": "Save to: "
+        "text_path_file": "Save to: "
     },
     "ua": {
         "text_title": "Назва:",
@@ -30,6 +30,6 @@ translations = {
         "percentage_label": "Завантажено: 0%",
         "button_download": "Завантажити",
         "switch": "Світла/Темна",
-        "path_file": "Зберегти у: "
+        "text_path_file": "Зберегти у: "
     }
 }
