@@ -100,7 +100,7 @@ class Interface:
 
         self.widgets["video_image"] = CTkLabel(self.widgets["frame_data_video"],
                                                text="", compound="bottom",
-                                               height=80)
+                                               height=150)
 
         # video download block
         self.widgets["frame_download"] = CTkFrame(self.app,
@@ -178,6 +178,11 @@ class Interface:
 
         # widgets by data about video
         self.widgets["frame_data_video"].grid(row=1, padx=10, pady=10, ipadx=5, ipady=5, sticky="ew")
+
+        self.widgets["frame_data_video"].grid_columnconfigure(0, weight=1)
+        self.widgets["frame_data_video"].grid_columnconfigure(1, weight=1)
+
+        # self.widgets["frame_data"].grid(row=0, column=1, rowspan=3, padx=5, pady=5, sticky="nsew")
 
         self.widgets["text_title"].grid(row=0, column=0, padx=(10, 0), pady=10, sticky="wen")
 
