@@ -10,6 +10,7 @@ from PIL import Image
 from io import BytesIO
 from requests import get
 from customtkinter import CTkImage
+from data.translate import translations as translation
 
 
 class Downloader:
@@ -25,6 +26,7 @@ class Downloader:
         self.file_name = ""
         self.is_download = ""
         self.path_file = "videos"
+        self.current_language = self.widgets["Combobox_language"].get()
 
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
@@ -41,7 +43,9 @@ class Downloader:
             print("Видео доступно.")
             return True
         except VideoUnavailable as e:
-            self.widgets["percentage_label"].configure(text="Video not available for download", text_color="red")
+            self.widgets["text_info"].configure(text=translation[self.current_language]["text_info"],
+                                                text_color="red")
+            self.widgets["text_info"].grid(row=0, column=0, pady=10, padx=20)
             print("Видео недоступно.", e)
             return False
         except PytubeError as e:
@@ -133,26 +137,24 @@ class Downloader:
         total_size = stream.filesize
         bytes_downloaded = total_size - bytes_remaining
         percentage = (bytes_downloaded / total_size) * 100
-        print("%: ", percentage)
-
         self.widgets["percentage_label"].after(0, lambda: self.update_progressbar(percentage))
-        # Установить state кнопки Download (disable/normal)
-        Helpers.set_button_state(self.widgets["button_download"], False)
 
     def update_progressbar(self, percentage):
         count_point = choice([3, 4])
-        text_download = "Downloading" + "." * count_point
+        text_download = translation[self.current_language]["Loading_progress"] + ("." * count_point)
         self.widgets["percentage_label"].configure(text=f"{text_download}\n {percentage: .2f} %")
 
         self.widgets["Progressbar"].set(percentage / 100)
 
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
-        self.widgets["percentage_label"].configure(text=f"Video downloaded")
+        self.widgets["percentage_label"].configure(text=translation[self.current_language]["Video_downloaded"])
         self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
-        self.widgets["path_text"].configure(text="Video downloaded, open folder:")
+        self.widgets["path_text"].configure(text=translation[self.current_language]["Open_folder"])
         # Установить state кнопки Download (disable/normal)
         Helpers.set_button_state(self.widgets["button_download"], True)
+        # Разрешить смену языка
+        self.widgets["Combobox_language"].configure(state="normal")
         # Скрыть progressbar
         self.widgets["Progressbar"].grid_remove()
 

@@ -17,6 +17,7 @@ widgets = {
     "text_radiobutton": None,
     "percentage_label": None,
     "path_file": None,
+    "text_info": None,
     # buttons
     "button_clear": None,
     "button_ok": None,

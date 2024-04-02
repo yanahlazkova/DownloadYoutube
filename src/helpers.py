@@ -4,6 +4,7 @@ from widgets import widgets
 from customtkinter import CTk
 import re
 from tkinter.messagebox import showerror
+from data.translate import translations as translate
 
 class Helpers:
     @staticmethod
@@ -75,3 +76,7 @@ class Helpers:
         random_url = choice(list_video)
         return random_url["url"]
 
+    @staticmethod
+    def select_widgets_translation(language):
+        """ перебор виджетов и элементов перевода """
+        return {key: translate[language][key] for key in translate[language].keys() & widgets.keys()}

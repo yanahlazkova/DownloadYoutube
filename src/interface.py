@@ -19,10 +19,7 @@ class Interface:
     default_color_theme = "green"
     video_downloaded = ""
     placeholder = ""
-    theme = {
-        "blue": "./themes/blue.json",
-        "dark-blue": "./themes/dark-blue.json"
-    }
+    downloader = None
 
     current_path = "videos"
 
@@ -108,8 +105,13 @@ class Interface:
                                                   border_color=self.default_color_theme,
                                                   border_width=2)
 
+        self.widgets["text_info"] = CTkLabel(self.widgets["frame_download"],
+                                             text="",
+                                             text_color="red")
+
         self.widgets["percentage_label"] = CTkLabel(self.widgets["frame_download"],
-                                                    text="Downloaded: 0 %", text_color="white")
+                                                    text="", # "Downloaded: 0 %",
+                                                    text_color="white")
 
         self.widgets["Progressbar"] = CTkProgressBar(self.widgets["frame_download"], width=200,
                                                      height=5)
@@ -266,7 +268,9 @@ class Interface:
         """ очистка данных загрузки """
         self.widgets["frame_path_download"].grid_remove()
         self.widgets["Textbox_path_to_video"].delete("0.0", tk.END)
-        self.widgets["percentage_label"].configure(text="Downloaded: 0 %", text_color="white")
+        self.widgets["text_info"].grid_remove()
+        # self.widgets["percentage_label"].configure(text=f"{translation[self.current_language]["percentage_label"]} 0 %", text_color="white")
+        self.widgets["percentage_label"].configure(text="") #, text_color="white")
         self.widgets["Progressbar"].set(0)
         self.widgets["Progressbar"].grid_remove()
 
@@ -287,8 +291,10 @@ class Interface:
         """ download video """
         self.widgets["Progressbar"].set(0)
         self.widgets["Progressbar"].grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
-        self.widgets["percentage_label"].configure(text="Выполняется загрузка")
+        self.widgets["percentage_label"].configure(text=translation[self.current_language]["Loading_progress"])
         Helpers.set_button_state(self.widgets["button_download"], False)
+        # # Запрет смены языка при загрузке
+        self.widgets["Combobox_language"].configure(state="disabled")
 
         self.downloader.start_download_thread()
 
@@ -325,14 +331,25 @@ class Interface:
         """Обработчик изменения языка"""
         if selected_language in translation:
             self.current_language = selected_language
+            # если класс downloader существует, присвоим его переменной текущий язык
+            if isinstance(self.downloader, Downloader):
+                self.downloader.current_language = selected_language
             # Меняем placeholder
             self.placeholder = self.list_placeholder[self.current_language]
             self.change_placeholder()
+
+            list_translates = Helpers.select_widgets_translation(self.current_language)
             # Проходим по всем виджетам и обновляем тексты в соответствии с текущим языком
-            text_translates = translation[self.current_language]
-            for widget_name in text_translates:
+            for widget_name in list_translates:
+                print("widget_name:", widget_name)
+                if widget_name == "percentage_label":
+                    current_value = widgets["percentage_label"].cget("text")
+                    if current_value == "":
+                        print("current_value empty", current_value == "")
+                        self.widgets["percentage_label"].configure(text="")
+                        continue
                 try:
-                    self.widgets[widget_name].configure(text=text_translates[widget_name])
+                    self.widgets[widget_name].configure(text=list_translates[widget_name])
                 except:
                     print("error", widget_name)
 
