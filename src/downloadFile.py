@@ -149,12 +149,13 @@ class Downloader:
     def on_complete(self, stream, path_file):
         showinfo("Downloaded", "Download is completed")
         self.widgets["percentage_label"].configure(text=translation[self.current_language]["Video_downloaded"])
-        self.widgets["frame_path_download"].grid(row=3, column=0, padx=20, sticky="we")
+        self.widgets["frame_path_download"].grid(row=3, column=0, padx=10, sticky="we")
         self.widgets["path_text"].configure(text=translation[self.current_language]["Open_folder"])
         # Установить state кнопки Download (disable/normal)
         Helpers.set_button_state(self.widgets["button_download"], True)
         # Разрешить смену языка
-        self.widgets["Combobox_language"].configure(state="normal")
+        # self.widgets["Combobox_language"].configure(state="normal")
+        Helpers.set_button_state(self.widgets["Combobox_language"], True)
         # Скрыть progressbar
         self.widgets["Progressbar"].grid_remove()
 

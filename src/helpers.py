@@ -1,10 +1,11 @@
 """ class for helper methods """
 from random import choice
 from widgets import widgets
-from customtkinter import CTk
+from customtkinter import CTk, get_appearance_mode
 import re
 from tkinter.messagebox import showerror
 from data.translate import translations as translate
+
 
 class Helpers:
     @staticmethod
@@ -28,8 +29,15 @@ class Helpers:
     def set_button_state(widget: widgets, state_button: bool):
         """ function set state of button disabled/normal
         False - disabled, True - normal """
-        widget.configure(state=("normal" if state_button else "disabled"),
-                         fg_color=("green" if state_button else "gray"))
+        # appearance_mode = get_appearance_mode()
+        # fg_color = "#2FA572" if appearance_mode == "Dark" else "#3B8ED0"
+        if widget == widgets["Combobox_language"]:
+            widget.configure(state=("normal" if state_button else "disabled"),
+                                                   button_color=(("#3B8ED0", "#2FA572") if state_button else "gray"),
+                                                   border_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
+        else:
+            widget.configure(state=("normal" if state_button else "disabled"),
+                             fg_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
 
     @staticmethod
     def center_window(app: CTk, app_width: int, app_height: int):

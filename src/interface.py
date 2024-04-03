@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from customtkinter import CTk, CTkButton, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
-    StringVar, set_default_color_theme, set_appearance_mode, CTkRadioButton
+    StringVar, set_default_color_theme, set_appearance_mode, get_appearance_mode
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
@@ -9,14 +9,14 @@ from downloadFile import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")
-set_default_color_theme("green")
+set_default_color_theme("themes/green.json")
 
 
 class Interface:
     """ creates interface, place widgets into UI """
     app_width = 0
     app_height = 0
-    default_color_theme = "green"
+    default_color_theme = "themes/blue.json" # "#2FA572"
     video_downloaded = ""
     placeholder = ""
     downloader = None
@@ -39,12 +39,13 @@ class Interface:
     def create_widgets(self):
         # Block enter url
         self.widgets["frame_link"] = CTkFrame(self.app,
-                                              border_color=self.default_color_theme,
+                                              # border_color=self.default_color_theme,
                                               border_width=2)
 
         # Enter url: text, input, button
         self.widgets["text_link"] = CTkLabel(self.widgets["frame_link"], text="URL: ",
-                                             text_color=self.default_color_theme, anchor="w")
+                                             # text_color=self.default_color_theme,
+                                             anchor="w")
 
         urls = [url["url"] for url in list_urls]
         combobox_var = StringVar(value=self.current_url)
@@ -53,13 +54,9 @@ class Interface:
             values=urls,
             variable=combobox_var,
             width=250,
-            border_color=self.default_color_theme,
-            button_color=self.default_color_theme,
-            dropdown_hover_color=self.default_color_theme,
             command=lambda current_value: self.get_data_video(current_value)
         )
 
-        # self.widgets["Combobox_url"].configure(command=lambda event: self.get_data_video())
         self.widgets["Combobox_url"].bind("<Return>", lambda event: self.get_data_video(event))
         self.widgets["Combobox_url"].bind("<Button-1>", lambda event: self.clear_variable())
         self.widgets["Combobox_url"].bind("<FocusOut>", lambda event: self.show_placeholder())
@@ -73,28 +70,32 @@ class Interface:
 
         # Data about video
         self.widgets["frame_data_video"] = CTkFrame(self.app,
-                                                    border_color=self.default_color_theme,
+                                                    # border_color=self.default_color_theme,
                                                     border_width=2)
 
         self.widgets["text_title"] = CTkLabel(self.widgets["frame_data_video"],
-                                              # text="Name: ",
                                               text=translation[self.current_language]["text_title"],
-                                              text_color=self.default_color_theme, anchor="w")
+                                              anchor="w")
 
         self.widgets["video_name"] = CTkLabel(self.widgets["frame_data_video"],
                                               width=280, text="",
+                                              text_color=("#6495ED", "gray80"),
                                               justify="left", anchor="w")
 
         self.widgets["text_author"] = CTkLabel(self.widgets["frame_data_video"],
                                               text="Autor: ",
-                                              text_color=self.default_color_theme, anchor="w")
+                                              # text_color=self.default_color_theme,
+                                               anchor="w")
 
         self.widgets["video_author"] = CTkLabel(self.widgets["frame_data_video"],
-                                                text="", width=280, anchor="w")
+                                                text="", width=280,
+                                                text_color=("#6495ED", "gray80"),
+                                                anchor="w")
 
         self.widgets["text_image"] = CTkLabel(self.widgets["frame_data_video"],
                                               text="Image: ",
-                                              text_color=self.default_color_theme, anchor="w")
+                                              # text_color=self.default_color_theme,
+                                              anchor="w")
 
         self.widgets["video_image"] = CTkLabel(self.widgets["frame_data_video"],
                                                text="", compound="bottom",
@@ -102,7 +103,7 @@ class Interface:
 
         # video download block
         self.widgets["frame_download"] = CTkFrame(self.app,
-                                                  border_color=self.default_color_theme,
+                                                  # border_color=self.default_color_theme,
                                                   border_width=2)
 
         self.widgets["text_info"] = CTkLabel(self.widgets["frame_download"],
@@ -110,8 +111,8 @@ class Interface:
                                              text_color="red")
 
         self.widgets["percentage_label"] = CTkLabel(self.widgets["frame_download"],
-                                                    text="", # "Downloaded: 0 %",
-                                                    text_color="white")
+                                                    text="",
+                                                    text_color=("#6495ED", "gray80"))
 
         self.widgets["Progressbar"] = CTkProgressBar(self.widgets["frame_download"], width=200,
                                                      height=5)
@@ -128,8 +129,7 @@ class Interface:
         self.widgets["frame_path_download"] = CTkFrame(
             self.widgets["frame_download"])
 
-        self.widgets["path_text"] = CTkLabel(self.widgets["frame_path_download"],
-                                             text="Path to file: ")
+        self.widgets["path_text"] = CTkLabel(self.widgets["frame_path_download"])
         self.widgets["Textbox_path_to_video"] = CTkTextbox(
             self.widgets["frame_path_download"],
             text_color="steelblue1",
@@ -142,10 +142,11 @@ class Interface:
 
         # widgets by setting colors
         self.widgets["frame_setting_window"] = CTkFrame(self.app,
-                                                        border_color=self.default_color_theme,
+                                                        # border_color=self.default_color_theme,
                                                         border_width=2)
         self.widgets["text_radiobutton"] = CTkLabel(
-            self.widgets["frame_setting_window"], text="Select theme: ", text_color=self.default_color_theme,
+            self.widgets["frame_setting_window"], text="Select theme: ",
+            # text_color=self.default_color_theme,
             anchor="w")
 
         self.switch_var = StringVar(value="on")
@@ -159,10 +160,6 @@ class Interface:
             values=self.list_language,
             variable=language_var,
             width=80,
-            border_color=self.default_color_theme,
-            button_color=self.default_color_theme,
-            dropdown_text_color=self.default_color_theme,
-            dropdown_hover_color=self.default_color_theme,
             command=lambda selected_language: self.on_language_change(selected_language))
 
         self.widgets["text_path_file"] = CTkLabel(
@@ -269,8 +266,7 @@ class Interface:
         self.widgets["frame_path_download"].grid_remove()
         self.widgets["Textbox_path_to_video"].delete("0.0", tk.END)
         self.widgets["text_info"].grid_remove()
-        # self.widgets["percentage_label"].configure(text=f"{translation[self.current_language]["percentage_label"]} 0 %", text_color="white")
-        self.widgets["percentage_label"].configure(text="") #, text_color="white")
+        self.widgets["percentage_label"].configure(text="", text_color=("#6495ED", "gray80"))
         self.widgets["Progressbar"].set(0)
         self.widgets["Progressbar"].grid_remove()
 
@@ -294,7 +290,7 @@ class Interface:
         self.widgets["percentage_label"].configure(text=translation[self.current_language]["Loading_progress"])
         Helpers.set_button_state(self.widgets["button_download"], False)
         # # Запрет смены языка при загрузке
-        self.widgets["Combobox_language"].configure(state="disabled")
+        Helpers.set_button_state(self.widgets["Combobox_language"], False)
 
         self.downloader.start_download_thread()
 
@@ -303,22 +299,12 @@ class Interface:
         color = self.switch_var.get()
         match color:
             case "on":
-                print("green", color)
-                # set_default_color_theme("green")
-
                 set_appearance_mode("Dark")
-                self.set_color_button("green")
+                # self.set_color_button("#2FA572")
 
             case "off":
-                print("blue", color)
-                # set_default_color_theme("blue")
                 set_appearance_mode("Light")
-                self.set_color_button("lightblue")
-
-    def set_color_button(self, color_button):
-        self.widgets["button_OK"].configure(fg_color=color_button)
-        self.widgets["button_download"].configure(fg_color=color_button)
-        self.widgets["button_Clear"].configure(fg_color=color_button)
+        self.widgets["button_download"].update()
 
     def change_placeholder(self):
         placeholders = (self.list_placeholder[lang] for lang in self.list_placeholder)
@@ -359,4 +345,3 @@ class Interface:
         if self.current_path:
             self.widgets["path_file"].configure(text=self.current_path)
             print(self.current_path)
-

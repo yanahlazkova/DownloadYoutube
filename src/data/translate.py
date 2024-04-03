@@ -1,3 +1,4 @@
+
 translations = {
     "ru": {
         "text_title": "Название:",
