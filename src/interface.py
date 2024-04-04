@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
-from customtkinter import CTk, CTkButton, CTkLabel, CTkProgressBar, CTkFrame, CTkComboBox, CTkTextbox, CTkSwitch, \
-    StringVar, set_default_color_theme, set_appearance_mode, get_appearance_mode
+from customtkinter import CTk, CTkFrame, CTkButton, CTkLabel, CTkProgressBar, CTkComboBox, CTkTextbox, CTkSwitch, \
+    StringVar, set_appearance_mode
+from classesWidgets import BaseFrame, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
@@ -9,14 +10,12 @@ from downloadFile import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")
-set_default_color_theme("themes/green.json")
 
 
 class Interface:
     """ creates interface, place widgets into UI """
     app_width = 0
     app_height = 0
-    default_color_theme = "themes/blue.json" # "#2FA572"
     video_downloaded = ""
     placeholder = ""
     downloader = None
@@ -32,24 +31,23 @@ class Interface:
         self.current_url = Helpers.get_random_url(list_urls)
         self.list_language = ["ua", "en", "ru"]
         self.current_language = self.list_language[1]
-        self.list_placeholder = {"en": "Enter video link", "ua": "Вкажіть посилання на відео", "ru": "Вставьте ссылку на видео"}
+        self.list_placeholder = {"en": "Enter video link", "ua": "Вкажіть посилання на відео",
+                                 "ru": "Вставьте ссылку на видео"}
         self.placeholder = self.list_placeholder[self.current_language]
         self.translate = {}
 
     def create_widgets(self):
         # Block enter url
-        self.widgets["frame_link"] = CTkFrame(self.app,
-                                              # border_color=self.default_color_theme,
-                                              border_width=2)
+        self.widgets["frame_link"] = BaseFrame(self.app)
 
         # Enter url: text, input, button
-        self.widgets["text_link"] = CTkLabel(self.widgets["frame_link"], text="URL: ",
-                                             # text_color=self.default_color_theme,
-                                             anchor="w")
+        self.widgets["text_link"] = BaseLabelText(self.widgets["frame_link"],
+                                                  text="URL: ",
+                                                  anchor="w")
 
         urls = [url["url"] for url in list_urls]
         combobox_var = StringVar(value=self.current_url)
-        self.widgets["Combobox_url"] = CTkComboBox(
+        self.widgets["Combobox_url"] = BaseComboBox(
             self.widgets["frame_link"],
             values=urls,
             variable=combobox_var,
@@ -61,64 +59,58 @@ class Interface:
         self.widgets["Combobox_url"].bind("<Button-1>", lambda event: self.clear_variable())
         self.widgets["Combobox_url"].bind("<FocusOut>", lambda event: self.show_placeholder())
 
-        self.widgets["button_Clear"] = CTkButton(self.widgets["frame_link"], text="X",
-                                                 width=10,
-                                                 command=self.clear_all)
-        self.widgets["button_OK"] = CTkButton(
+        self.widgets["button_Clear"] = BaseButton(self.widgets["frame_link"], text="X",
+                                                  width=10,
+                                                  command=self.clear_all)
+        self.widgets["button_OK"] = BaseButton(
             self.widgets["frame_link"], text="OK", width=10,
             command=lambda: self.get_data_video(self.current_url))
 
         # Data about video
-        self.widgets["frame_data_video"] = CTkFrame(self.app,
-                                                    # border_color=self.default_color_theme,
-                                                    border_width=2)
+        self.widgets["frame_data_video"] = BaseFrame(self.app)
 
-        self.widgets["text_title"] = CTkLabel(self.widgets["frame_data_video"],
-                                              text=translation[self.current_language]["text_title"],
-                                              anchor="w")
+        self.widgets["text_title"] = BaseLabelText(self.widgets["frame_data_video"],
+                                                   text=translation[self.current_language]["text_title"],
+                                                   anchor="w")
 
         self.widgets["video_name"] = CTkLabel(self.widgets["frame_data_video"],
                                               width=280, text="",
                                               text_color=("#6495ED", "gray80"),
                                               justify="left", anchor="w")
 
-        self.widgets["text_author"] = CTkLabel(self.widgets["frame_data_video"],
-                                              text="Autor: ",
-                                              # text_color=self.default_color_theme,
-                                               anchor="w")
+        self.widgets["text_author"] = BaseLabelText(self.widgets["frame_data_video"],
+                                                    text="Autor: ",
+                                                    anchor="w")
 
         self.widgets["video_author"] = CTkLabel(self.widgets["frame_data_video"],
                                                 text="", width=280,
                                                 text_color=("#6495ED", "gray80"),
                                                 anchor="w")
 
-        self.widgets["text_image"] = CTkLabel(self.widgets["frame_data_video"],
-                                              text="Image: ",
-                                              # text_color=self.default_color_theme,
-                                              anchor="w")
+        self.widgets["text_image"] = BaseLabelText(self.widgets["frame_data_video"],
+                                                   text="Image: ",
+                                                   anchor="w")
 
         self.widgets["video_image"] = CTkLabel(self.widgets["frame_data_video"],
                                                text="", compound="bottom",
                                                height=150)
 
         # video download block
-        self.widgets["frame_download"] = CTkFrame(self.app,
-                                                  # border_color=self.default_color_theme,
-                                                  border_width=2)
+        self.widgets["frame_download"] = BaseFrame(self.app)
 
-        self.widgets["text_info"] = CTkLabel(self.widgets["frame_download"],
-                                             text="",
-                                             text_color="red")
+        self.widgets["text_info"] = BaseLabelText(self.widgets["frame_download"],
+                                                  text="",
+                                                  text_color="red")
 
         self.widgets["percentage_label"] = CTkLabel(self.widgets["frame_download"],
                                                     text="",
                                                     text_color=("#6495ED", "gray80"))
 
-        self.widgets["Progressbar"] = CTkProgressBar(self.widgets["frame_download"], width=200,
-                                                     height=5)
+        self.widgets["Progressbar"] = BaseProgressBar(self.widgets["frame_download"], width=200,
+                                                      height=5)
         self.widgets["Progressbar"].set(0)
 
-        self.widgets["button_download"] = CTkButton(
+        self.widgets["button_download"] = BaseButton(
             self.widgets["frame_download"],
             text="Download",
             fg_color="gray",
@@ -129,40 +121,37 @@ class Interface:
         self.widgets["frame_path_download"] = CTkFrame(
             self.widgets["frame_download"])
 
-        self.widgets["path_text"] = CTkLabel(self.widgets["frame_path_download"])
+        self.widgets["path_text"] = BaseLabelText(self.widgets["frame_path_download"])
         self.widgets["Textbox_path_to_video"] = CTkTextbox(
             self.widgets["frame_path_download"],
             text_color="steelblue1",
             activate_scrollbars=False,
             wrap="word",
             height=55,
-            width=335,
-            cursor="hand2",
+            width=380,
+            cursor="hand2"
         )
 
         # widgets by setting colors
-        self.widgets["frame_setting_window"] = CTkFrame(self.app,
-                                                        # border_color=self.default_color_theme,
-                                                        border_width=2)
-        self.widgets["text_radiobutton"] = CTkLabel(
+        self.widgets["frame_setting_window"] = BaseFrame(self.app)
+        self.widgets["text_radiobutton"] = BaseLabelText(
             self.widgets["frame_setting_window"], text="Select theme: ",
-            # text_color=self.default_color_theme,
             anchor="w")
 
         self.switch_var = StringVar(value="on")
-        self.widgets["switch"] = CTkSwitch(self.widgets["frame_setting_window"], text="Light/Dark",
-                                           variable=self.switch_var, onvalue="on",
-                                           offvalue="off", command=self.set_theme)
+        self.widgets["switch"] = BaseSwitch(self.widgets["frame_setting_window"], text="Light/Dark",
+                                            variable=self.switch_var, onvalue="on",
+                                            offvalue="off", command=self.set_theme)
 
         language_var = StringVar(value=self.current_language)
-        self.widgets["Combobox_language"] = CTkComboBox(
+        self.widgets["Combobox_language"] = BaseComboBox(
             self.widgets["frame_setting_window"],
             values=self.list_language,
             variable=language_var,
             width=80,
             command=lambda selected_language: self.on_language_change(selected_language))
 
-        self.widgets["text_path_file"] = CTkLabel(
+        self.widgets["text_path_file"] = BaseLabelText(
             self.widgets["frame_setting_window"],
             text=translation[self.current_language]["text_path_file"],
             anchor="w"
@@ -312,7 +301,6 @@ class Interface:
         if self.widgets["Combobox_url"].get() in placeholders:
             self.widgets["Combobox_url"].set(self.placeholder)
 
-
     def on_language_change(self, selected_language):
         """Обработчик изменения языка"""
         if selected_language in translation:
@@ -345,4 +333,3 @@ class Interface:
         if self.current_path:
             self.widgets["path_file"].configure(text=self.current_path)
             print(self.current_path)
-
