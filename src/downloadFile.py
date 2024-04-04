@@ -36,7 +36,7 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              # use_oauth=True, allow_oauth_cache=True
+                              use_oauth=True, allow_oauth_cache=True
                               )
             self.streams = self.yt.streams
 
@@ -177,10 +177,10 @@ class Downloader:
         """ checking if the file exists
         to add number at the end of the file"""
         count = 0
-        new_file_name = self.file_name
+        new_file_name = file_name = Helpers.sanitize_file_name(self.file_name)
         print("file_name", new_file_name)
         while path.exists(path.join(self.path_file, new_file_name + ".mp4")):
             count += 1
-            new_file_name = f"{self.file_name} ({count})"
+            new_file_name = f"{file_name} ({count})"
             print(new_file_name)
         return new_file_name

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from customtkinter import CTk, CTkFrame, CTkButton, CTkLabel, CTkProgressBar, CTkComboBox, CTkTextbox, CTkSwitch, \
     StringVar, set_appearance_mode
-from classesWidgets import BaseFrame, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
+from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
@@ -20,7 +20,7 @@ class Interface:
     placeholder = ""
     downloader = None
 
-    current_path = "videos"
+    current_path_saved = "videos"
 
     def __init__(self, title: str, width: int, height: int):
         self.app = CTk()
@@ -52,10 +52,10 @@ class Interface:
             values=urls,
             variable=combobox_var,
             width=250,
-            command=lambda current_value: self.get_data_video(current_value)
+            command=lambda event: self.get_data_video(event)
         )
 
-        self.widgets["Combobox_url"].bind("<Return>", lambda event: self.get_data_video(event))
+        self.widgets["Combobox_url"].bind("<Return>", self.get_data_video)
         self.widgets["Combobox_url"].bind("<Button-1>", lambda event: self.clear_variable())
         self.widgets["Combobox_url"].bind("<FocusOut>", lambda event: self.show_placeholder())
 
@@ -73,19 +73,19 @@ class Interface:
                                                    text=translation[self.current_language]["text_title"],
                                                    anchor="w")
 
-        self.widgets["video_name"] = CTkLabel(self.widgets["frame_data_video"],
-                                              width=280, text="",
-                                              text_color=("#6495ED", "gray80"),
-                                              justify="left", anchor="w")
+        self.widgets["video_name"] = BaseLabel(self.widgets["frame_data_video"],
+                                                width=280, text="",
+                                                # text_color=("#6495ED", "gray80"),
+                                                justify="left", anchor="w")
 
         self.widgets["text_author"] = BaseLabelText(self.widgets["frame_data_video"],
                                                     text="Autor: ",
                                                     anchor="w")
 
-        self.widgets["video_author"] = CTkLabel(self.widgets["frame_data_video"],
-                                                text="", width=280,
-                                                text_color=("#6495ED", "gray80"),
-                                                anchor="w")
+        self.widgets["video_author"] = BaseLabel(self.widgets["frame_data_video"],
+                                                  text="", width=280,
+                                                  # text_color=("#6495ED", "gray80"),
+                                                  anchor="w")
 
         self.widgets["text_image"] = BaseLabelText(self.widgets["frame_data_video"],
                                                    text="Image: ",
@@ -102,9 +102,10 @@ class Interface:
                                                   text="",
                                                   text_color="red")
 
-        self.widgets["percentage_label"] = CTkLabel(self.widgets["frame_download"],
-                                                    text="",
-                                                    text_color=("#6495ED", "gray80"))
+        self.widgets["percentage_label"] = BaseLabel(self.widgets["frame_download"],
+                                                      text="",
+                                                      # text_color=("#6495ED", "gray80")
+                                                      )
 
         self.widgets["Progressbar"] = BaseProgressBar(self.widgets["frame_download"], width=200,
                                                       height=5)
@@ -160,7 +161,7 @@ class Interface:
         self.widgets["path_file"] = CTkLabel(
             self.widgets["frame_setting_window"],
             text_color="steelblue1",
-            text=self.current_path,
+            text=self.current_path_saved,
             cursor="hand2",
             anchor="w")
 
@@ -234,10 +235,12 @@ class Interface:
         if self.widgets["Combobox_url"].get() == "":
             self.widgets["Combobox_url"].set(self.placeholder)
 
-    def get_data_video(self, current_link):
+    def get_data_video(self, event):
+        if self.current_url == self.widgets["Combobox_url"].get() and self.widgets["video_name"].cget("text") != "":
+            return
         """  get video data  """
         self.clear_data()
-        self.current_url = current_link  # self.widgets["Combobox_url"].get()
+        self.current_url = self.widgets["Combobox_url"].get()
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
@@ -329,7 +332,7 @@ class Interface:
 
     def select_folder_to_save(self, event):
         """Select folder to save video"""
-        self.current_path = filedialog.askdirectory(initialdir=self.current_path)
-        if self.current_path:
-            self.widgets["path_file"].configure(text=self.current_path)
-            print(self.current_path)
+        self.current_path_saved = filedialog.askdirectory(initialdir=self.current_path_saved)
+        if self.current_path_saved:
+            self.widgets["path_file"].configure(text=self.current_path_saved)
+            print(self.current_path_saved)

@@ -61,6 +61,15 @@ class BaseLabelText(CTkLabel):
 
         self.configure(text_color=self.text_color)
 
+class BaseLabel(CTkLabel):
+    def __init__(self, master=None, **kwargs):
+        # Устанавливаем общие аргументы
+        self.text_color = kwargs.pop("text_color", ("#00CED1", "gray80"))
+
+        super().__init__(master, **kwargs)
+
+        self.configure(text_color=self.text_color)
+
 class BaseSwitch(CTkSwitch):
     def __init__(self, master=None, **kwargs):
         # Устанавливаем общие аргументы
@@ -68,7 +77,7 @@ class BaseSwitch(CTkSwitch):
         self.progress_color = kwargs.pop("progress_color", ("#87CEFA", "#2FA572"))
         self.button_color = kwargs.pop("button_color", ("#1F6AA5", "#D5D9DE"))
         self.button_hover_color = kwargs.pop("button_hover_color", ("#4A4D50", "gray100"))
-        self.text_color = kwargs.pop("text_color", ("#6495ED", "gray80"))
+        self.text_color = kwargs.pop("text_color", ("#00CED1", "gray80"))
 
         super().__init__(master, **kwargs)
 

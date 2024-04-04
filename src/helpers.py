@@ -88,3 +88,15 @@ class Helpers:
     def select_widgets_translation(language):
         """ перебор виджетов и элементов перевода """
         return {key: translate[language][key] for key in translate[language].keys() & widgets.keys()}
+
+    @staticmethod
+    def sanitize_file_name(file_name: str):
+        """ проверяет каждый символ в имени файла на его допустимость
+        и заменяет недопустимые символы на '_' """
+        # Список недопустимых символов в именах файлов для Windows
+        invalid_chars = r'<>:"/\|?*\x00'
+
+        # Заменяем все недопустимые символы на *
+        sanitized_file_name = re.sub('[' + re.escape(invalid_chars) + ']', '_', file_name)
+
+        return sanitized_file_name
