@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
 from customtkinter import CTk, CTkFrame, CTkButton, CTkLabel, CTkProgressBar, CTkComboBox, CTkTextbox, CTkSwitch, \
-    StringVar, set_appearance_mode
+    StringVar, set_appearance_mode, CTkInputDialog
+from customtkinter.windows.ctk_toplevel import CTkToplevel
 from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
 from helpers import Helpers
 from widgets import widgets
@@ -14,6 +15,7 @@ set_appearance_mode("Dark")
 
 class Interface:
     """ creates interface, place widgets into UI """
+    app = None
     app_width = 0
     app_height = 0
     video_downloaded = ""
@@ -94,6 +96,12 @@ class Interface:
         self.widgets["video_image"] = CTkLabel(self.widgets["frame_data_video"],
                                                text="", compound="bottom",
                                                height=150)
+
+        self.widgets["verification_url"] = CTkLabel(self.widgets["frame_data_video"],
+                                                    text="")
+
+        self.widgets["user_code"] = CTkLabel(self.widgets["frame_data_video"],
+                                             text="")
 
         # video download block
         self.widgets["frame_download"] = BaseFrame(self.app)
@@ -199,7 +207,7 @@ class Interface:
 
         self.widgets["text_image"].grid(row=2, column=0, padx=(10, 0), pady=10, sticky="nwe")
 
-        self.widgets["video_image"].grid(row=2, column=1, padx=5, pady=10, sticky="n")  # , columnspan=4)
+        # self.widgets["video_image"].grid(row=2, column=1, padx=5, pady=10, sticky="n")  # , columnspan=4)
 
         # widgets by download of video
         self.widgets["frame_download"].columnconfigure(0, weight=1)
@@ -267,6 +275,7 @@ class Interface:
         self.widgets["video_name"].configure(text="")
         self.widgets["video_author"].configure(text="")
         self.widgets["video_image"].configure(image=None)
+        self.widgets["video_image"].grid_remove()
         Helpers.set_button_state(self.widgets["button_download"], False)
         self.clear_data_download()
 
@@ -336,3 +345,4 @@ class Interface:
         if self.current_path_saved:
             self.widgets["path_file"].configure(text=self.current_path_saved)
             print(self.current_path_saved)
+
