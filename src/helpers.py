@@ -40,7 +40,7 @@ class Helpers:
                              fg_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
 
     @staticmethod
-    def center_window(app: CTk, app_width: int, app_height: int):
+    def center_window(app, app_width, app_height):
         """ centering app window """
         screen_width = app.winfo_screenwidth()
         screen_height = app.winfo_screenheight()
