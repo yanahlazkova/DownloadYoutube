@@ -1,14 +1,14 @@
 from typing import Union, Tuple, Optional
 
-from .widgets import CTkLabel
-from .widgets import CTkEntry
-from .widgets import CTkButton
-from .widgets.theme import ThemeManager
-from .ctk_toplevel import CTkToplevel
-from .widgets.font import CTkFont
+from customtkinter.windows.widgets import CTkLabel, CTkEntry, CTkButton
+from classesWidgets import BaseLabel, BaseLabelText, BaseButton
+from customtkinter.windows.widgets.theme import ThemeManager
+from customtkinter.windows.ctk_toplevel import CTkToplevel
+from customtkinter.windows.widgets.font import CTkFont
+from helpers import Helpers
 
 
-class CTkInputDialog(CTkToplevel):
+class ModalWindow(CTkToplevel):
     """
     Dialog with extra window, message, entry widget, cancel and ok button.
     For detailed information check out the documentation.
@@ -24,11 +24,17 @@ class CTkInputDialog(CTkToplevel):
                  entry_border_color: Optional[Union[str, Tuple[str, str]]] = None,
                  entry_text_color: Optional[Union[str, Tuple[str, str]]] = None,
 
+                 verification_url: str = None,
+                 user_code: str = None,
+
                  title: str = "Authentication",
                  font: Optional[Union[tuple, CTkFont]] = None,
-                 text: str = "CTkDialog"):
+                 text: str = "Please open"):
 
         super().__init__(fg_color=fg_color)
+        self.verification_url = verification_url
+        self.user_code = user_code
+        self.center_window(400, 200)
 
         self._fg_color = ThemeManager.theme["CTkToplevel"]["fg_color"] if fg_color is None else self._check_color_type(fg_color)
         self._text_color = ThemeManager.theme["CTkLabel"]["text_color"] if text_color is None else self._check_color_type(button_hover_color)
@@ -46,6 +52,7 @@ class CTkInputDialog(CTkToplevel):
         self._font = font
 
         self.title(self._title)
+
         self.lift()  # lift window on top
         self.attributes("-topmost", True)  # stay on top
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
@@ -57,7 +64,7 @@ class CTkInputDialog(CTkToplevel):
         self.grid_columnconfigure((0, 1), weight=1)
         self.rowconfigure(0, weight=1)
 
-        self._label = CTkLabel(master=self,
+        self._label = BaseLabelText(master=self,
                                width=300,
                                wraplength=300,
                                fg_color="transparent",
@@ -66,13 +73,30 @@ class CTkInputDialog(CTkToplevel):
                                font=self._font)
         self._label.grid(row=0, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
 
+        self.label_url = BaseLabel(master=self,
+                                   text_color="steelblue1",
+                                   text=self.verification_url,
+                                   cursor="hand2")
+        self.label_url.grid(row=1, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
+
+        # self.label_code = CTkEntry(master=self,
+        #                            # text_color="steelblue1",
+        #                            # placeholder_text="sfasdafsdfas",
+        #                            state="readonly")
+        # self.label_code.insert("end", self.user_code)
+        # self.label_url.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
+
+
         self._entry = CTkEntry(master=self,
                                width=230,
                                fg_color=self._entry_fg_color,
                                border_color=self._entry_border_color,
                                text_color=self._entry_text_color,
                                font=self._font)
-        self._entry.grid(row=1, column=0, columnspan=2, padx=20, pady=(0, 20), sticky="ew")
+
+        self._entry.grid(row=3, column=0, columnspan=2, padx=20, pady=(0, 20), sticky="ew")
+        self._entry.insert("end", self.user_code)
+
 
         self._ok_button = CTkButton(master=self,
                                     width=100,
@@ -83,7 +107,7 @@ class CTkInputDialog(CTkToplevel):
                                     text='Ok',
                                     font=self._font,
                                     command=self._ok_event)
-        self._ok_button.grid(row=2, column=0, columnspan=1, padx=(20, 10), pady=(0, 20), sticky="ew")
+        self._ok_button.grid(row=4, column=0, columnspan=1, padx=(20, 10), pady=(0, 20), sticky="ew")
 
         self._cancel_button = CTkButton(master=self,
                                         width=100,
@@ -94,15 +118,27 @@ class CTkInputDialog(CTkToplevel):
                                         text='Cancel',
                                         font=self._font,
                                         command=self._cancel_event)
-        self._cancel_button.grid(row=2, column=1, columnspan=1, padx=(10, 20), pady=(0, 20), sticky="ew")
+        self._cancel_button.grid(row=4, column=1, columnspan=1, padx=(10, 20), pady=(0, 20), sticky="ew")
 
-        self.after(150, lambda: self._entry.focus())  # set focus to entry with slight delay, otherwise it won't work
-        self._entry.bind("<Return>", self._ok_event)
+        # self.after(150, lambda: self._entry.focus())  # set focus to entry with slight delay, otherwise it won't work
+        # self._entry.bind("<Return>", self._ok_event)
 
     def _ok_event(self, event=None):
-        self._user_input = self._entry.get()
+        # self._user_input = self._entry.get()
         self.grab_release()
         self.destroy()
+
+    def center_window(self, app_width, app_height):
+        """ centering app window """
+
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        x = (screen_width - app_width) // 2
+        y = (screen_height - app_height) // 2
+
+        self.geometry(f"{app_width}x{app_height}+{x}+{y}")
+
 
     def _on_closing(self):
         self.grab_release()
