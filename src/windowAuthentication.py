@@ -1,6 +1,6 @@
 from typing import Union, Tuple, Optional
 
-from customtkinter.windows.widgets import CTkButton, CTkTextbox
+from customtkinter.windows.widgets import CTkButton, CTkTextbox, CTkEntry
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 from customtkinter.windows.widgets.theme import ThemeManager
 from customtkinter.windows.ctk_toplevel import CTkToplevel
@@ -92,25 +92,24 @@ class ModalWindow(CTkToplevel):
                                    cursor="hand2")
         self.label_url.grid(row=1, column=0, columnspan=2, padx=10, pady=(5, 10), sticky="ew")
 
-        self.text_user_code = CTkTextbox(self.frame,
-                                         # fg_color="transparent",
-                                         activate_scrollbars=False,
-                                         height=30,
-                                         # justify="center",
-                                         wrap="word",
-                                         state="readonly"
-                                         )
-        # self._entry = CTkEntry(master=self.frame,
-                               # width=230,
-                               # fg_color=self._entry_fg_color,
-                               # border_color=self._entry_border_color,
-                               # text_color=self._entry_text_color,
-                               # font=self._font,
-                               # justify="center",
-                               # state="readonly")
+        # self.text_user_code = CTkTextbox(self.frame,
+        #                                  # fg_color="transparent",
+        #                                  activate_scrollbars=False,
+        #                                  height=30,
+        #                                  # justify="center",
+        #                                  wrap="word"
+        #                                  )
+        self._entry = CTkEntry(master=self.frame,
+                               width=230,
+                               fg_color=self._entry_fg_color,
+                               border_color=self._entry_border_color,
+                               text_color=self._entry_text_color,
+                               font=self._font,
+                               justify="center")
 
-        self.text_user_code.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
-        self.text_user_code.insert("1.0", self.user_code)
+        self._entry.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+        self._entry.insert(0, self.user_code)
+        self._entry.bind("<KeyPress>", self.ignore_keyboard)
 
         self._ok_button = CTkButton(master=self.frame,
                                     width=100,
@@ -135,7 +134,7 @@ class ModalWindow(CTkToplevel):
         self._cancel_button.grid(row=3, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.after(150, lambda: self._entry.focus())  # set focus to entry with slight delay, otherwise it won't work
-        # self._entry.bind("<Return>", self._ok_event)
+        self._entry.bind("<Return>", self._ok_event)
 
         self.grid_rowconfigure(0, weight=1)  # Растягиваем строку 0 по вертикали
         self.grid_columnconfigure(0, weight=1)
@@ -167,3 +166,6 @@ class ModalWindow(CTkToplevel):
     def get_input(self):
         self.master.wait_window(self)
         return self._user_input
+
+    def ignore_keyboard(self, event):
+        return "break"  # Игнорируем ввод с клавиатуры
