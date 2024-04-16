@@ -178,7 +178,7 @@ class ModalWindow(CTkToplevel):
     def open_authentication(self, event):
         print("Auth google")
         # page = open(self.verification_url)
-        driver = webdriver.Chrome()
+        driver = webdriver.Firefox()
         driver.get(self.verification_url)
         input_element = driver.find_element(By.NAME, "code")
         input_element.send_keys(self.user_code)

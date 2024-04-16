@@ -244,8 +244,6 @@ class Interface:
             self.widgets["Combobox_url"].set(self.placeholder)
 
     def get_data_video(self, event):
-        modalWindow.open_modal_window(self.app, url="https//google.com/authentication_1", kod="WERdeW")
-
         if self.current_url == self.widgets["Combobox_url"].get() and self.widgets["video_name"].cget("text") != "":
             return
         """  get video data  """
@@ -347,4 +345,3 @@ class Interface:
         if self.current_path_saved:
             self.widgets["path_file"].configure(text=self.current_path_saved)
             print(self.current_path_saved)
-
