@@ -5,7 +5,9 @@ from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 from customtkinter.windows.widgets.theme import ThemeManager
 from customtkinter.windows.ctk_toplevel import CTkToplevel
 from customtkinter.windows.widgets.font import CTkFont
-from helpers import Helpers
+import webbrowser
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 class ModalWindow(CTkToplevel):
@@ -29,11 +31,11 @@ class ModalWindow(CTkToplevel):
 
                  title: str = "Authentication",
                  font: Optional[Union[tuple, CTkFont]] = None,
-                 text: str = "Для дальнейшей работы необходимо выполнить аутентификацию"):
+                 text: str = "Выполните аутентификацию"):
         super().__init__(fg_color=fg_color)
         self.verification_url = verification_url
         self.user_code = user_code
-        self.center_window(400, 200)
+        self.center_window(400, 250)
 
         self._fg_color = ThemeManager.theme["CTkToplevel"]["fg_color"] if fg_color is None else self._check_color_type(
             fg_color)
@@ -92,12 +94,18 @@ class ModalWindow(CTkToplevel):
                                         )
         self.label_text.grid(row=1, column=0, padx=10, pady=5, sticky="ne")
 
-        self.label_url = CTkLabel(master=self.frame,
+        self.label_url = BaseLabelText(master=self.frame,
                                    text_color="steelblue1",
                                    text=str(self.verification_url),
                                    cursor="hand2"
                                    )
-        self.label_url.grid(row=1, column=1, padx=10, pady=5, sticky="nw")
+        self.label_url.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
+        self.label_url.bind("<Button-1>", lambda event: self.open_authentication(event))
+
+        self.label_text_info = BaseLabel(master=self.frame,
+                                             text="and input code"
+                                             )
+        self.label_text_info.grid(row=3, column=0, columnspan=2, padx=5, pady=(5, 2))
 
         self._entry = CTkEntry(master=self.frame,
                                width=230,
@@ -107,31 +115,28 @@ class ModalWindow(CTkToplevel):
                                font=self._font,
                                justify="center")
 
-        self._entry.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+        self._entry.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
         self._entry.insert(0, self.user_code)
         self._entry.bind("<KeyPress>", self.ignore_keyboard)
 
-        self._ok_button = CTkButton(master=self.frame,
+        self.label_info_text = BaseLabelText(master=self.frame,
+                                             text="Press OK when you have completed this step."
+                                             )
+        self.label_info_text.grid(row=5, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
+
+        self._ok_button = BaseButton(master=self.frame,
                                     width=100,
-                                    border_width=0,
-                                    fg_color=self._button_fg_color,
-                                    hover_color=self._button_hover_color,
-                                    text_color=self._button_text_color,
                                     text='Ok',
                                     font=self._font,
                                     command=self._ok_event)
-        self._ok_button.grid(row=3, column=0, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
+        self._ok_button.grid(row=6, column=0, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
-        self._cancel_button = CTkButton(master=self.frame,
+        self._cancel_button = BaseButton(master=self.frame,
                                         width=100,
-                                        border_width=0,
-                                        fg_color=self._button_fg_color,
-                                        hover_color=self._button_hover_color,
-                                        text_color=self._button_text_color,
                                         text='Cancel',
                                         font=self._font,
                                         command=self._cancel_event)
-        self._cancel_button.grid(row=3, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
+        self._cancel_button.grid(row=6, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.after(150, lambda: self._entry.focus())  # set focus to entry with slight delay, otherwise it won't work
         self._entry.bind("<Return>", self._ok_event)
@@ -143,6 +148,21 @@ class ModalWindow(CTkToplevel):
         # self._user_input = self._entry.get()
         self.grab_release()
         self.destroy()
+        return True
+
+    def _on_closing(self):
+        self.grab_release()
+        self.destroy()
+        return False
+
+    def _cancel_event(self):
+        self.grab_release()
+        self.destroy()
+        return False
+
+    def ignore_keyboard(self, event):
+        """ Игнорирование на нажатие клавиш """
+        return "break"  # Игнорируем ввод с клавиатуры
 
     def center_window(self, app_width, app_height):
         """ centering app window """
@@ -151,21 +171,14 @@ class ModalWindow(CTkToplevel):
         screen_height = self.winfo_screenheight()
 
         x = (screen_width - app_width) // 2
-        y = (screen_height - app_height) // 2
+        y = (screen_height - app_height) // 3
 
         self.geometry(f"{app_width}x{app_height}+{x}+{y}")
 
-    def _on_closing(self):
-        self.grab_release()
-        self.destroy()
-
-    def _cancel_event(self):
-        self.grab_release()
-        self.destroy()
-
-    def get_input(self):
-        self.master.wait_window(self)
-        return self._user_input
-
-    def ignore_keyboard(self, event):
-        return "break"  # Игнорируем ввод с клавиатуры
+    def open_authentication(self, event):
+        print("Auth google")
+        # page = open(self.verification_url)
+        driver = webdriver.Chrome()
+        driver.get(self.verification_url)
+        input_element = driver.find_element(By.NAME, "code")
+        input_element.send_keys(self.user_code)
