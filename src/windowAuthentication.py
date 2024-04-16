@@ -1,6 +1,6 @@
 from typing import Union, Tuple, Optional
 
-from customtkinter.windows.widgets import CTkButton, CTkTextbox, CTkEntry
+from customtkinter.windows.widgets import CTkButton, CTkLabel, CTkEntry
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 from customtkinter.windows.widgets.theme import ThemeManager
 from customtkinter.windows.ctk_toplevel import CTkToplevel
@@ -29,7 +29,7 @@ class ModalWindow(CTkToplevel):
 
                  title: str = "Authentication",
                  font: Optional[Union[tuple, CTkFont]] = None,
-                 text: str = "Please open"):
+                 text: str = "Для дальнейшей работы необходимо выполнить аутентификацию"):
         super().__init__(fg_color=fg_color)
         self.verification_url = verification_url
         self.user_code = user_code
@@ -81,24 +81,24 @@ class ModalWindow(CTkToplevel):
                                     width=300,
                                     wraplength=300,
                                     fg_color="transparent",
-                                    text_color=self._text_color,
+                                    # text_color=self._text_color,
                                     text=self._text,
-                                    font=self._font)
+                                    font=self._font
+                                    )
         self._label.grid(row=0, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
 
-        self.label_url = BaseLabel(master=self.frame,
-                                   text_color="steelblue1",
-                                   text=self.verification_url,
-                                   cursor="hand2")
-        self.label_url.grid(row=1, column=0, columnspan=2, padx=10, pady=(5, 10), sticky="ew")
+        self.label_text = BaseLabel(master=self.frame,
+                                    text="Please open"
+                                        )
+        self.label_text.grid(row=1, column=0, padx=10, pady=5, sticky="ne")
 
-        # self.text_user_code = CTkTextbox(self.frame,
-        #                                  # fg_color="transparent",
-        #                                  activate_scrollbars=False,
-        #                                  height=30,
-        #                                  # justify="center",
-        #                                  wrap="word"
-        #                                  )
+        self.label_url = CTkLabel(master=self.frame,
+                                   text_color="steelblue1",
+                                   text=str(self.verification_url),
+                                   cursor="hand2"
+                                   )
+        self.label_url.grid(row=1, column=1, padx=10, pady=5, sticky="nw")
+
         self._entry = CTkEntry(master=self.frame,
                                width=230,
                                fg_color=self._entry_fg_color,
