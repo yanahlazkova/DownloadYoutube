@@ -1,6 +1,7 @@
 from typing import Union, Tuple, Optional
 
 from customtkinter.windows.widgets import CTkButton, CTkLabel, CTkEntry
+from CTkToolTip import *
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 from customtkinter.windows.widgets.theme import ThemeManager
 from customtkinter.windows.ctk_toplevel import CTkToplevel
@@ -54,8 +55,8 @@ class ModalWindow(CTkToplevel):
         self._entry_text_color = ThemeManager.theme["CTkEntry"][
             "text_color"] if entry_text_color is None else self._check_color_type(entry_text_color)
 
-        self._user_input: Union[str, None] = None
-        self._running: bool = False
+        # self._user_input: Union[str, None] = None
+        # self._running: bool = False
         self._title = title
         self._text = text
         self._font = font
@@ -63,7 +64,7 @@ class ModalWindow(CTkToplevel):
         self.title(self._title)
 
         self.lift()  # lift window on top
-        self.attributes("-topmost", True)  # stay on top
+        # self.attributes("-topmost", True)  # stay on top
         self.protocol("WM_DELETE_WINDOW", self._on_closing)
         self.after(10,
                    self._create_widgets)  # create widgets with slight delay, to avoid white flickering of background
@@ -71,9 +72,6 @@ class ModalWindow(CTkToplevel):
         self.grab_set()  # make other windows not clickable
 
     def _create_widgets(self):
-        # self.grid_columnconfigure((0, 1), weight=1)
-        # self.rowconfigure(0, weight=1)
-
         self.frame = BaseFrame(master=self)
         self.frame.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
@@ -107,17 +105,22 @@ class ModalWindow(CTkToplevel):
                                              )
         self.label_text_info.grid(row=3, column=0, columnspan=2, padx=5, pady=(5, 2))
 
-        self._entry = CTkEntry(master=self.frame,
-                               width=230,
-                               fg_color=self._entry_fg_color,
-                               border_color=self._entry_border_color,
-                               text_color=self._entry_text_color,
-                               font=self._font,
-                               justify="center")
+        self.entry_code = CTkEntry(master=self.frame,
+                                   width=230,
+                                   fg_color=self._entry_fg_color,
+                                   border_color=self._entry_border_color,
+                                   text_color=self._entry_text_color,
+                                   font=self._font,
+                                   justify="center")
 
-        self._entry.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
-        self._entry.insert(0, self.user_code)
-        self._entry.bind("<KeyPress>", self.ignore_keyboard)
+        self.entry_code.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
+        self.entry_code.insert(0, self.user_code)
+        self.entry_code.bind("<KeyPress>", self.ignore_keyboard)
+
+        self.tooltip = CTkToolTip(self.entry_code)
+        self.tooltip.configure(message='Copy this code: "Ctrl + C" ',
+                               text_color=("#3B8ED0", "#2FA572"),
+                               bg_color=("#E0FFFF"))
 
         self.label_info_text = BaseLabelText(master=self.frame,
                                              text="Press OK when you have completed this step."
@@ -138,8 +141,8 @@ class ModalWindow(CTkToplevel):
                                         command=self._cancel_event)
         self._cancel_button.grid(row=6, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
-        self.after(150, lambda: self._entry.focus())  # set focus to entry with slight delay, otherwise it won't work
-        self._entry.bind("<Return>", self._ok_event)
+        self.after(150, lambda: self.entry_code.focus())  # set focus to entry with slight delay, otherwise it won't work
+        # self.entry_code.bind("<Return>", self._ok_event)
 
         self.grid_rowconfigure(0, weight=1)  # Растягиваем строку 0 по вертикали
         self.grid_columnconfigure(0, weight=1)
@@ -161,8 +164,14 @@ class ModalWindow(CTkToplevel):
         return False
 
     def ignore_keyboard(self, event):
-        """ Игнорирование на нажатие клавиш """
-        return "break"  # Игнорируем ввод с клавиатуры
+
+        if event.keysym == 'c' and event.state & 0x4:  # Проверяем, что нажата клавиша 'C' и удерживается Ctrl
+            print("Copy")
+            text = event.widget.selection_get()  # Получаем выделенный текст
+            self.frame.clipboard_clear()  # Очищаем буфер обмена
+            self.frame.clipboard_append(text)  # Копируем текст в буфер обмена""" Игнорирование на нажатие клавиш """
+        else:
+            return "break"  # Игнорируем ввод с клавиатуры
 
     def center_window(self, app_width, app_height):
         """ centering app window """
@@ -182,3 +191,7 @@ class ModalWindow(CTkToplevel):
         driver.get(self.verification_url)
         input_element = driver.find_element(By.NAME, "code")
         input_element.send_keys(self.user_code)
+        
+    def wait_window(self):
+        super().wait_window(self)
+        

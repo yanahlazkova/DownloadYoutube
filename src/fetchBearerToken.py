@@ -1,11 +1,8 @@
 from pytube import innertube, request
 import time
 import json
-from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
-import windowAuthentication
-from tkinter.messagebox import showinfo
-# from interface import Interface
-from customtkinter.windows.ctk_toplevel import CTkToplevel
+from windowAuthentication import ModalWindow
+
 
 
 # YouTube on TV client secrets
@@ -36,8 +33,9 @@ def fetch_bearer_token(self):
     user_code = response_data['user_code']
 
     # модальное окно из модуля windowAuthentication
-    auth = windowAuthentication.ModalWindow(verification_url=verification_url, user_code=user_code)
+    auth = ModalWindow(verification_url=verification_url, user_code=user_code)
     if auth:
+        auth.wait_window()
         print(f'Please open {verification_url} and input code {user_code}')
         input('Press enter when you have completed this step.')
 
