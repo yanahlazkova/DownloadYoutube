@@ -34,6 +34,7 @@ class Downloader:
         print("4 check")
         self.url_video = self.widgets["Combobox_url"].get()
         print(self.url_video)
+        input()
         try:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
