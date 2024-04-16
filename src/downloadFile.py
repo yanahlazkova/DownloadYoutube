@@ -11,6 +11,7 @@ from io import BytesIO
 from requests import get
 from customtkinter import CTkImage
 from data.translate import translations as translation
+import fetchBearerToken
 
 
 class Downloader:
@@ -30,6 +31,7 @@ class Downloader:
 
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
+        print("4 check")
         self.url_video = self.widgets["Combobox_url"].get()
         print(self.url_video)
         input()
@@ -37,7 +39,7 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=True, allow_oauth_cache=True
+                              use_oauth=True, allow_oauth_cache=False
                               )
             self.streams = self.yt.streams
 
@@ -58,11 +60,13 @@ class Downloader:
 
     def start_get_data_thread(self):
         """Starts the download video process in a separate thread."""
+        print("1 start")
         download_thread = Thread(target=self.get_data_video_thread)
         download_thread.start()
 
     def get_data_video_thread(self):
         """Method to download the video in a separate thread."""
+        print("2 get_thread")
         if self.access:
             video_data = self.get_data_video()
             self.show_data_video(video_data)
@@ -86,6 +90,8 @@ class Downloader:
         image = CTkImage(image_data, size=(220, 150))
         image.image = image_data
         self.widgets["video_image"].configure(image=image)
+        self.widgets["video_image"].grid(row=2, column=1, padx=5, pady=10, sticky="n")  # , columnspan=4)
+
 
         # Установить видимость кнопки Download(disable / normal)
         Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
@@ -93,6 +99,7 @@ class Downloader:
 
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
+        print("3 get data")
         self.access = self.check_video_availability()
 
         try:
