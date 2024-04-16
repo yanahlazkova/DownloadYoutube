@@ -40,7 +40,7 @@ class Helpers:
                              fg_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
 
     @staticmethod
-    def center_window(app: CTk, app_width: int, app_height: int):
+    def center_window(app, app_width, app_height):
         """ centering app window """
         screen_width = app.winfo_screenwidth()
         screen_height = app.winfo_screenheight()
@@ -87,4 +87,20 @@ class Helpers:
     @staticmethod
     def select_widgets_translation(language):
         """ перебор виджетов и элементов перевода """
+<<<<<<< HEAD
         return {key: translate[language][key] for key in translate[language].keys() & widgets.keys()}
+=======
+        return {key: translate[language][key] for key in translate[language].keys() & widgets.keys()}
+
+    @staticmethod
+    def sanitize_file_name(file_name: str):
+        """ проверяет каждый символ в имени файла на его допустимость
+        и заменяет недопустимые символы на '_' """
+        # Список недопустимых символов в именах файлов для Windows
+        invalid_chars = r'<>:"/\|?*\x00'
+
+        # Заменяем все недопустимые символы на *
+        sanitized_file_name = re.sub('[' + re.escape(invalid_chars) + ']', '_', file_name)
+
+        return sanitized_file_name
+>>>>>>> main
