@@ -36,8 +36,8 @@ def fetch_bearer_token(self):
     if auth.auth_use:
 
 
-        # print(f'Please open {verification_url} and input code {user_code}')
-        # input('Press enter when you have completed this step.')
+        print(f'Please open {verification_url} and input code {user_code}')
+        input('Press enter when you have completed this step.')
 
 
         data = {

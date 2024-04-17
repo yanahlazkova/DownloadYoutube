@@ -74,7 +74,7 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=True, allow_oauth_cache=False
+                              use_oauth=True, allow_oauth_cache=True
                               )
 
             self.streams = self.yt.streams
