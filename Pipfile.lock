@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4395bdffd5d0ff36cf6c414b1851ee0933cf88092d23eefcb0a6ba5eed540405"
+            "sha256": "642ec71d8f32646be957f83c5c48756b7ea8d84889b017f649026f1bb528b3f8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -194,6 +194,15 @@
             ],
             "markers": "python_full_version >= '3.7.0'",
             "version": "==3.3.2"
+        },
+        "ctktooltip": {
+            "hashes": [
+                "sha256:08596120b12c8fa9b9bff2931a3aef3a29719380def9a0a50380c3b6852b4564",
+                "sha256:dd91fc208596e14d0eea03eaa57b0d6095be995538ce2b87538e4266fa7a753d"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==0.8"
         },
         "customtkinter": {
             "hashes": [
@@ -485,4 +494,3 @@
     },
     "develop": {}
 }
-
