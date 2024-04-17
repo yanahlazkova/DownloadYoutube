@@ -5,6 +5,8 @@ from customtkinter import CTk, get_appearance_mode
 import re
 from tkinter.messagebox import showerror
 from data.translate import translations as translate
+from pytube import innertube, request
+import json
 
 
 class Helpers:
@@ -100,3 +102,4 @@ class Helpers:
         sanitized_file_name = re.sub('[' + re.escape(invalid_chars) + ']', '_', file_name)
 
         return sanitized_file_name
+

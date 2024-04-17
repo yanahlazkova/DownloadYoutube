@@ -1,9 +1,7 @@
 from pytube import innertube, request
 import time
 import json
-from windowAuthentication import ModalWindow
-
-
+from modalWindow import ToplevelWindow
 
 # YouTube on TV client secrets
 _client_id = innertube._client_id
@@ -32,12 +30,14 @@ def fetch_bearer_token(self):
     verification_url = response_data['verification_url']
     user_code = response_data['user_code']
 
-    # модальное окно из модуля windowAuthentication
-    auth = ModalWindow(verification_url=verification_url, user_code=user_code)
-    if auth:
-        auth.wait_window()
-        print(f'Please open {verification_url} and input code {user_code}')
-        input('Press enter when you have completed this step.')
+    # модальное окно из модуля modalWindow
+    auth = ToplevelWindow(verification_url=verification_url, user_code=user_code)
+    auth.my_wait_window()
+    if auth.auth_use:
+
+
+        # print(f'Please open {verification_url} and input code {user_code}')
+        # input('Press enter when you have completed this step.')
 
 
         data = {
@@ -60,7 +60,10 @@ def fetch_bearer_token(self):
         self.refresh_token = response_data['refresh_token']
         self.expires = start_time + response_data['expires_in']
         self.cache_tokens()
+    else:
+        print("No custom authentication")
+        return False
 
 
-innertube.InnerTube.fetch_bearer_token = fetch_bearer_token
+# innertube.InnerTube.fetch_bearer_token = fetch_bearer_token
 

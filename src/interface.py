@@ -244,15 +244,16 @@ class Interface:
             self.widgets["Combobox_url"].set(self.placeholder)
 
     def get_data_video(self, event):
+        """  Authentication in google and get video data  """
         if self.current_url == self.widgets["Combobox_url"].get() and self.widgets["video_name"].cget("text") != "":
             return
-        """  get video data  """
+
         self.clear_data()
         self.current_url = self.widgets["Combobox_url"].get()
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets)
+            self.downloader = Downloader(self.widgets, self.app)
             self.downloader.start_get_data_thread()
             # self.show_data_video(data_video)
 
