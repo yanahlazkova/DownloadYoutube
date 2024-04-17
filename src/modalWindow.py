@@ -1,11 +1,12 @@
 from customtkinter.windows.ctk_toplevel import CTkToplevel
-from customtkinter import CTkToplevel, CTkLabel
-from customtkinter.windows.widgets import CTkButton, CTkLabel, CTkEntry
+from customtkinter import CTkToplevel
+from customtkinter.windows.widgets import CTkButton, CTkEntry
 from CTkToolTip import *
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 import webbrowser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from tkinter import Menu
 
 
 class ToplevelWindow(CTkToplevel):
@@ -51,7 +52,8 @@ class ToplevelWindow(CTkToplevel):
                                        cursor="hand2"
                                        )
         self.label_url.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
-        self.label_url.bind("<Button-1>", lambda event: self.open_authentication(event))
+        self.label_url.bind("<Button-1>", lambda event: self.show_menu(event))
+        # self.label_url.bind("<Button-3>", show_menu)
 
         self.label_text_info = BaseLabel(master=self.frame,
                                          text="and input code"
@@ -111,15 +113,31 @@ class ToplevelWindow(CTkToplevel):
         self.grab_release()
         self.destroy()
 
+    def show_menu(self, event):
+        menu = Menu(self.label_url, tearoff=0)
+        menu.add_command(label="Edge", command=lambda: print("Edge"))
+        menu.add_separator()
+        menu.add_command(label="Копировать", command=self.copy_url)
+        # menu.add_command(label="Выход", command=root.quit)
+        x, y = event.widget.winfo_pointerxy()
+        menu.tk_popup(x, y)
+
     def ignore_keyboard(self, event):
 
         if event.keysym == 'c' and event.state & 0x4:  # Проверяем, что нажата клавиша 'C' и удерживается Ctrl
-            print("Copy")
+            print("Copy_code")
             text = event.widget.selection_get()  # Получаем выделенный текст
             self.frame.clipboard_clear()  # Очищаем буфер обмена
             self.frame.clipboard_append(text)  # Копируем текст в буфер обмена""" Игнорирование на нажатие клавиш """
         else:
             return "break"  # Игнорируем ввод с клавиатуры
+
+    def copy_url(self):
+        print("Copy_url")
+        text = str(self.verification_url)
+        self.frame.clipboard_clear()
+        self.frame.clipboard_append(text)
+        print(text)
 
     def center_window(self, app_width, app_height):
         """ centering app window """
