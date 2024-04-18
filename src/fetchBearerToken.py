@@ -68,9 +68,9 @@ def fetch_bearer_token(self):
         self.access_token = response_data['access_token']
         self.refresh_token = response_data['refresh_token']
         self.expires = start_time + response_data['expires_in']
-        self.allow_cache = self.allow_oauth_cache
-        innertube.InnerTube.cache_tokens(self)
-        # cache_tokens(self)
+        # self.allow_cache = self.allow_oauth_cache
+        # innertube.InnerTube.cache_tokens(self)
+        cache_tokens(self)
         # return True
     else:
         print("No custom authentication")

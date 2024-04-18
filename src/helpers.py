@@ -5,8 +5,6 @@ from customtkinter import CTk, get_appearance_mode
 import re
 from tkinter.messagebox import showerror
 from data.translate import translations as translate
-from getpass import getuser
-import os
 import winreg
 
 
@@ -123,3 +121,4 @@ class Helpers:
                 return value
         except FileNotFoundError:
             return None
+

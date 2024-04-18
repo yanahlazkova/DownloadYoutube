@@ -13,6 +13,7 @@ from data.translate import translations as translation
 set_appearance_mode("Dark")
 
 
+
 class Interface:
     """ creates interface, place widgets into UI """
     app = None
@@ -25,6 +26,7 @@ class Interface:
     current_path_saved = "videos"
 
     def __init__(self, title: str, width: int, height: int):
+        self.auth_user = False
         self.app = CTk()
         self.widgets = widgets
         self.app.title(title)
@@ -253,7 +255,7 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets, self.app)
+            self.downloader = Downloader(self.widgets, self.app, self)
             self.downloader.start_get_data_thread()
             # self.show_data_video(data_video)
 
@@ -294,7 +296,7 @@ class Interface:
         # # Запрет смены языка при загрузке
         Helpers.set_button_state(self.widgets["Combobox_language"], False)
 
-        self.downloader.start_download_thread()
+        self.downloader.start_download_thread(self.auth_user)
 
     def set_theme(self):
         """ установка светлой / темной темы """
@@ -346,3 +348,6 @@ class Interface:
         if self.current_path_saved:
             self.widgets["path_file"].configure(text=self.current_path_saved)
             print(self.current_path_saved)
+
+    def set_auth_user(self, auth_user):
+        self.auth_user = auth_user
