@@ -1,6 +1,7 @@
 # import io
 from os import path, startfile
 from pytube import YouTube
+from pytube import innertube
 from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter import END
 from tkinter.messagebox import showinfo, showerror
@@ -43,10 +44,7 @@ class Downloader:
             self.show_data_video(video_data)
         else:
             showinfo("Not authenticated", "You need to authenticate")
-        # if self.access:
-        #
-        # else:
-        #     showerror("Error...", "Video is not available for download")
+
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
         print("3 get data")
@@ -54,6 +52,7 @@ class Downloader:
         self.access_video = self.check_video_availability()
         if not self.access_user:
             return None
+        print("Получение названия")
         try:
             self.file_name = self.yt.title
             video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
@@ -74,10 +73,11 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=True, allow_oauth_cache=True
+                              use_oauth=True, allow_oauth_cache=False
                               )
-
-            self.streams = self.yt.streams
+            print(self.yt.title)
+            # self.streams = self.yt.streams
+            print("Я тут - 4 check")
 
             print("Видео доступно.")
             self.access_user = True
@@ -139,7 +139,7 @@ class Downloader:
          если да, добавим номер в конеце имени файла """
         video_name = self.check_video_exists()
         try:
-            stream = self.streams.get_highest_resolution()
+            stream = self.yt.streams.get_highest_resolution()
             self.path_file = self.widgets["path_file"].cget("text")
             self.is_download = stream.download(self.path_file, skip_existing=False, filename=f"{video_name}.mp4")
 

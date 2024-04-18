@@ -7,6 +7,7 @@ from tkinter.messagebox import showerror
 from data.translate import translations as translate
 from getpass import getuser
 import os
+import winreg
 
 
 class Helpers:
@@ -104,21 +105,21 @@ class Helpers:
         return sanitized_file_name
 
     @staticmethod
-    def find_dir_webbrowser(browser_name):
-        username = getuser()
-        standard_directories = [
-            "C:\\Program Files\\",
-            "C:\\Program Files (x86)\\",
-            f"C:\\Users\\{username}\\AppData\\Local\\",
-            # Добавьте другие директории по необходимости
-        ]
-        print(username)
+    def find_browser_registry(browser_name):
+        """ ищет путь к исполняемому файлу для указанного браузера в реестре Windows """
+        # Словарь с путями к ключам реестра для разных браузеров
+        browser_registry_paths = {
+            "Chrome": r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe",
+            "Firefox": r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\firefox.exe",
+            "Edge": r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe",
+            "Opera": r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\opera.exe"
+        }
 
-        # Проверяем каждую стандартную директорию на наличие исполняемого файла браузера
-        for directory in standard_directories:
-            browser_path = os.path.join(directory, browser_name)
-            print(browser_path)
-            if os.path.exists(browser_path):
-                return browser_path
-
-        return None
+        try:
+            # Открываем соответствующий ключ реестра
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, browser_registry_paths[browser_name]) as key:
+                # Получаем значение из ключа
+                value, _ = winreg.QueryValueEx(key, "")
+                return value
+        except FileNotFoundError:
+            return None

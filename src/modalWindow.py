@@ -16,10 +16,10 @@ class ToplevelWindow(CTkToplevel):
     auth_use = None
     def __init__(self, verification_url: str = None,
                  user_code: str = None, *args, **kwargs):
-        self.icon_edge = PhotoImage(file="D:/Damir/PYTHON/DownloadYoutube/src/data/Edge.png")
-        self.icon_chrome = PhotoImage(file="D:/Damir/PYTHON/DownloadYoutube/src/data/Chrome.png")
-        self.icon_firefox = PhotoImage(file="D:/Damir/PYTHON/DownloadYoutube/src/data/Firefox.png")
-        self.icon_opera = PhotoImage(file="D:/Damir/PYTHON/DownloadYoutube/src/data/Opera.png")
+        self.icon_edge = PhotoImage(file=".\\data\\Edge.png")
+        self.icon_chrome = PhotoImage(file=".\\data\\Chrome.png")
+        self.icon_firefox = PhotoImage(file=".\\data\\Firefox.png")
+        self.icon_opera = PhotoImage(file=".\\data\\Opera.png")
 
         super().__init__(*args, **kwargs)
         self.verification_url = verification_url
@@ -107,24 +107,27 @@ class ToplevelWindow(CTkToplevel):
         self.auth_use = True
         self.grab_release()
         self.destroy()
+        return True
 
     def on_closing(self):
         self.auth_use = False
         self.grab_release()
         self.destroy()
+        return False
 
     def cancel_event(self):
         self.auth_use = False
         self.grab_release()
         self.destroy()
+        return False
 
     def show_menu(self, event):
         menu = Menu(self.label_url, tearoff=0)
 
-        menu.add_command(label="Открыть в Edge", command=lambda: self.open_browser("edge.exe")) #, image=self.icon_edge, compound=LEFT)
-        menu.add_command(label="Открыть в Chrome", command=lambda:  self.open_browser("chrome.exe")) #, image=self.icon_chrome, compound=LEFT)
-        menu.add_command(label="Открыть в Firefox", command=lambda:  self.open_browser("firefox.exe")) #, image=self.icon_firefox, compound=LEFT)
-        menu.add_command(label="Открыть в Opera", command=lambda:  self.open_browser("opera.exe")) #, image=self.icon_opera, compound=LEFT)
+        menu.add_command(label="Открыть в Edge", command=lambda: self.open_browser("Edge")) #, image=self.icon_edge, compound=LEFT)
+        menu.add_command(label="Открыть в Chrome", command=lambda:  self.open_browser("Chrome")) #, image=self.icon_chrome, compound=LEFT)
+        menu.add_command(label="Открыть в Firefox", command=lambda:  self.open_browser("Firefox")) #, image=self.icon_firefox, compound=LEFT)
+        menu.add_command(label="Открыть в Opera", command=lambda:  self.open_browser("Opera")) #, image=self.icon_opera, compound=LEFT)
         menu.add_separator()
         menu.add_command(label="Копировать", command=self.copy_url)
         x, y = event.widget.winfo_pointerxy()
@@ -161,16 +164,21 @@ class ToplevelWindow(CTkToplevel):
     def open_browser(self, browser):
         print("Auth google in", browser)
         # поиск директории браузера
-        browser_dir = Helpers.find_dir_webbrowser(browser)
+        browser_dir = Helpers.find_browser_registry(browser)
         print(browser_dir)
         if browser_dir:
             webbrowser.register(browser, None,
                                 webbrowser.BackgroundBrowser(browser_dir)
                                 )
-            webbrowser.get(browser).open_new_tab(self.verification_url)
+            br_dir = webbrowser.get(browser).open_new_tab(self.verification_url)
         else:
-            open(self.verification_url)
+            br_dir = webbrowser.open(self.verification_url)
+        print(br_dir)
 
+        # поместим код в буфер обмена
+        text = str(self.user_code)
+        self.frame.clipboard_clear()
+        self.frame.clipboard_append(text)
 
     # @staticmethod
     def my_wait_window(self):
