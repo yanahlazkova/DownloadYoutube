@@ -5,8 +5,8 @@ from customtkinter import CTk, get_appearance_mode
 import re
 from tkinter.messagebox import showerror
 from data.translate import translations as translate
-from pytube import innertube, request
-import json
+from getpass import getuser
+import os
 
 
 class Helpers:
@@ -103,3 +103,22 @@ class Helpers:
 
         return sanitized_file_name
 
+    @staticmethod
+    def find_dir_webbrowser(browser_name):
+        username = getuser()
+        standard_directories = [
+            "C:\\Program Files\\",
+            "C:\\Program Files (x86)\\",
+            f"C:\\Users\\{username}\\AppData\\Local\\",
+            # Добавьте другие директории по необходимости
+        ]
+        print(username)
+
+        # Проверяем каждую стандартную директорию на наличие исполняемого файла браузера
+        for directory in standard_directories:
+            browser_path = os.path.join(directory, browser_name)
+            print(browser_path)
+            if os.path.exists(browser_path):
+                return browser_path
+
+        return None

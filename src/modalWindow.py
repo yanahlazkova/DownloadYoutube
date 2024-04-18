@@ -4,7 +4,7 @@ from customtkinter.windows.widgets import CTkButton, CTkEntry
 from CTkToolTip import *
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 import webbrowser
-# from selenium import webdriver
+from helpers import Helpers
 # from selenium.webdriver.common.by import By
 from tkinter import Menu, PhotoImage, LEFT
 
@@ -121,10 +121,10 @@ class ToplevelWindow(CTkToplevel):
     def show_menu(self, event):
         menu = Menu(self.label_url, tearoff=0)
 
-        menu.add_command(label="Открыть в Edge", command=lambda: self.open_authentication("Edge")) #, image=self.icon_edge, compound=LEFT)
-        menu.add_command(label="Открыть в Chrome", command=lambda:  self.open_authentication("Chrome")) #, image=self.icon_chrome, compound=LEFT)
-        menu.add_command(label="Открыть в Firefox", command=lambda:  self.open_authentication("Firefox")) #, image=self.icon_firefox, compound=LEFT)
-        menu.add_command(label="Открыть в Opera", command=lambda:  self.open_authentication("Opera")) #, image=self.icon_opera, compound=LEFT)
+        menu.add_command(label="Открыть в Edge", command=lambda: self.open_browser("edge.exe")) #, image=self.icon_edge, compound=LEFT)
+        menu.add_command(label="Открыть в Chrome", command=lambda:  self.open_browser("chrome.exe")) #, image=self.icon_chrome, compound=LEFT)
+        menu.add_command(label="Открыть в Firefox", command=lambda:  self.open_browser("firefox.exe")) #, image=self.icon_firefox, compound=LEFT)
+        menu.add_command(label="Открыть в Opera", command=lambda:  self.open_browser("opera.exe")) #, image=self.icon_opera, compound=LEFT)
         menu.add_separator()
         menu.add_command(label="Копировать", command=self.copy_url)
         x, y = event.widget.winfo_pointerxy()
@@ -158,16 +158,19 @@ class ToplevelWindow(CTkToplevel):
 
         self.geometry(f"{app_width}x{app_height}+{x}+{y}")
 
-    def open_authentication(self, browser):
-        print("Auth google")
-        # page = open(self.verification_url)
-        webbrowser.register(browser, None,
-                            webbrowser.BackgroundBrowser("C://Program Files//Mozilla Firefox//firefox.exe"))
-        webbrowser.get(browser).open_new_tab(self.verification_url)
-        # driver = webdriver.Firefox()
-        # driver.get(self.verification_url)
-        # input_element = driver.find_element(By.NAME, "code")
-        # input_element.send_keys(self.user_code)
+    def open_browser(self, browser):
+        print("Auth google in", browser)
+        # поиск директории браузера
+        browser_dir = Helpers.find_dir_webbrowser(browser)
+        print(browser_dir)
+        if browser_dir:
+            webbrowser.register(browser, None,
+                                webbrowser.BackgroundBrowser(browser_dir)
+                                )
+            webbrowser.get(browser).open_new_tab(self.verification_url)
+        else:
+            open(self.verification_url)
+
 
     # @staticmethod
     def my_wait_window(self):
