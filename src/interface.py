@@ -26,7 +26,7 @@ class Interface:
     current_path_saved = "videos"
 
     def __init__(self, title: str, width: int, height: int):
-        self.auth_user = False
+        # self.auth_user = False
         self.app = CTk()
         self.widgets = widgets
         self.app.title(title)
@@ -255,7 +255,7 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets, self.app, self)
+            self.downloader = Downloader(self.widgets, self.app)
             self.downloader.start_get_data_thread()
             # self.show_data_video(data_video)
 
@@ -296,7 +296,7 @@ class Interface:
         # # Запрет смены языка при загрузке
         Helpers.set_button_state(self.widgets["Combobox_language"], False)
 
-        self.downloader.start_download_thread(self.auth_user)
+        self.downloader.start_download_thread()
 
     def set_theme(self):
         """ установка светлой / темной темы """

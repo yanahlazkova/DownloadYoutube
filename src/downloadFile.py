@@ -4,7 +4,7 @@ from pytube import YouTube
 from pytube import innertube
 from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter import END
-from tkinter.messagebox import showinfo, showerror
+from tkinter.messagebox import showinfo
 from threading import Thread
 from helpers import *
 from PIL import Image
@@ -20,20 +20,19 @@ innertube.InnerTube.fetch_bearer_token = fetchBearerToken.fetch_bearer_token
 class Downloader:
     """ download video, display video data, display progressbar """
 
-    def __init__(self, widgets, app, interface):
-        self.current_interface = interface
+    def __init__(self, widgets, app):
         self.stream = None
-        self.use_oauth = not self.current_interface.auth_user # аутентифиция пользователя
-        self.current_app = app
+        self.use_oauth = False # выполнять аутентифицию пользователя
+        self.current_app = app # текущее окно приложения
         self.widgets = widgets
         self.url_video = ""
         self.yt = None
-        self.access_video = True
+        self.access_video = self.use_oauth # доступ к данным видео
         self.file_name = ""
-        self.is_download = ""
-        self.path_file = "videos"
+        self.is_download = "" # путь к загруженному видео
+        self.path_file = "videos" # путь к директории загрузки видео
         self.current_language = self.widgets["Combobox_language"].get()
-        self.access_user = self.current_interface.auth_user # пользователь аутентифицирован
+        self.access_user = False # пользователь аутентифицирован
 
     def start_get_data_thread(self):
         """Starts the download video process in a separate thread."""
@@ -53,10 +52,10 @@ class Downloader:
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
         print("3 get data")
-
-        self.check_video_availability()
-        if not self.access_user:
-            return None
+        self.preparation_get_video_data()
+        # if not self.access_user:
+        #     return None
+        self.access_video = self.check_access_download()
         print("Получение названия")
         try:
             self.file_name = self.yt.title
@@ -67,12 +66,13 @@ class Downloader:
         except Exception as e:
             showerror("Error..", f"YouTube link is invalid\n({e})")
             # return None
-    def check_video_availability(self):
+    def preparation_get_video_data(self):
         """ Проверка, доступно ли видео для загрузки"""
         print("4 check")
 
         self.url_video = self.widgets["Combobox_url"].get()
         print(self.url_video)
+        self.use_oauth = False
         self.access_user = self.get_youtube_data()
 
     def get_youtube_data(self):
@@ -80,27 +80,32 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=self.use_oauth, allow_oauth_cache=True
+                              use_oauth=self.use_oauth, allow_oauth_cache=False
                               )
-            if self.use_oauth:
-                self.use_oauth = False
-                self.current_interface.auth_user = True
-            else:
-                self.stream = self.yt.streams
+
+                                # return False
 
             print("Видео доступно.")
             return True
-        except VideoUnavailable as e:
-            self.widgets["text_info"].configure(text=translation[self.current_language]["text_info"],
-                                                text_color="red")
-            self.widgets["text_info"].grid(row=0, column=0, pady=10, padx=20)
-            print("Видео недоступно.", e)
-            return False
+
         except PytubeError as e:
             print("Произошла ошибка Pytube:", e)
             return False
         except Exception as e:
             print("Произошла ошибка authentication:", e)
+            return False
+
+    def check_access_download(self):
+        """ проверка доступно ли видео для загрузки """
+        try:
+            self.stream = self.yt.streams
+            return True
+        except VideoUnavailable as e:
+            self.widgets["text_info"].configure(text=translation[self.current_language]["text_info"],
+                                                text_color="red")
+            self.widgets["text_info"].grid(row=0, column=0, pady=10, padx=20)
+
+            print("Видео недоступно для загрузки", e)
             return False
 
     def show_data_video(self, data_video):
@@ -126,13 +131,14 @@ class Downloader:
         # Установить видимость кнопки Download(disable / normal)
         Helpers.set_button_state(self.widgets["button_download"], data_video["access"])
 
-    def start_download_thread(self, auth_user):
+    def start_download_thread(self):
         """Starts the download video process in a separate thread."""
         download_thread = Thread(target=self.download_video_thread)
         download_thread.start()
 
     def download_video_thread(self):
         """Method to download the video in a separate thread."""
+        self.access_video = self.check_access_download()
         if self.access_video:
             self.download_video()
             return True
@@ -140,9 +146,10 @@ class Downloader:
             showerror("Error...", "Video is not available for download")
 
     def download_video(self):
-
+        self.use_oauth = True
         video_name = self.check_video_exists()
-        self.get_youtube_data()
+        self.access_video = self.get_youtube_data()
+        print("video access: ", self.access_video)
         try:
             self.stream = self.yt.streams.get_highest_resolution()
             self.path_file = self.widgets["path_file"].cget("text")
