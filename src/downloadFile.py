@@ -1,7 +1,7 @@
 # import io
 from os import path, startfile
 from pytube import YouTube
-from pytube import innertube
+from pytube.innertube import InnerTube
 from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter import END
 from tkinter.messagebox import showinfo
@@ -14,7 +14,7 @@ from customtkinter import CTkImage
 from data.translate import translations as translation
 import fetchBearerToken
 
-innertube.InnerTube.fetch_bearer_token = fetchBearerToken.fetch_bearer_token
+InnerTube.fetch_bearer_token = fetchBearerToken.fetch_bearer_token
 
 
 class Downloader:
@@ -53,8 +53,6 @@ class Downloader:
         """ get and pass to modul interface: title, author, image of video """
         print("3 get data")
         self.preparation_get_video_data()
-        # if not self.access_user:
-        #     return None
         self.access_video = self.check_access_download()
         print("Получение названия")
         try:
@@ -73,17 +71,19 @@ class Downloader:
         self.url_video = self.widgets["Combobox_url"].get()
         print(self.url_video)
         self.use_oauth = False
-        self.access_user = self.get_youtube_data()
+        self.access_user = self.get_youtube_data(False, False)
 
-    def get_youtube_data(self):
+    def get_youtube_data(self, use_oauth=True, allow_oauth_cache=True):
+        print("GFN-MHM-ZNB")
         try:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=self.use_oauth, allow_oauth_cache=False
+                              use_oauth=use_oauth, allow_oauth_cache=allow_oauth_cache
                               )
-
-                                # return False
+            # чтобы 2 раза не выполнялась аутентификация
+            if self.use_oauth:
+                self.use_oauth = False
 
             print("Видео доступно.")
             return True
@@ -133,12 +133,21 @@ class Downloader:
 
     def start_download_thread(self):
         """Starts the download video process in a separate thread."""
-        download_thread = Thread(target=self.download_video_thread)
-        download_thread.start()
+        self.use_oauth = True
+        self.get_youtube_data()
+        print("authent")
+        try:
+            if self.yt.streams:
+                print("start - video access: ", self.access_video)
+                download_thread = Thread(target=self.download_video_thread)
+                download_thread.start()
+        except Exception as e:
+            showinfo("Not authenticated", "Необходимо пройти аутентификацию")
+            return
+
 
     def download_video_thread(self):
         """Method to download the video in a separate thread."""
-        self.access_video = self.check_access_download()
         if self.access_video:
             self.download_video()
             return True
@@ -146,10 +155,8 @@ class Downloader:
             showerror("Error...", "Video is not available for download")
 
     def download_video(self):
-        self.use_oauth = True
         video_name = self.check_video_exists()
-        self.access_video = self.get_youtube_data()
-        print("video access: ", self.access_video)
+        # self.access_video = self.get_youtube_data()
         try:
             self.stream = self.yt.streams.get_highest_resolution()
             self.path_file = self.widgets["path_file"].cget("text")
@@ -159,7 +166,8 @@ class Downloader:
         except VideoUnavailable as e:
             showerror("Error...", "Video url is unavaialable" + str(e))
         except Exception as e:
-            showerror("Error...", f"Failed to upload video: {e}")
+            # showerror("Error...", f"Failed to upload video: {e}")
+            showinfo("Not authenticated", "You need to authenticate")
 
     def on_progress(self, stream, _, bytes_remaining):
         """ Вывод прогрессбар при загрузке файла """

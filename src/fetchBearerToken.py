@@ -74,7 +74,7 @@ def fetch_bearer_token(self):
         # return True
     else:
         print("No custom authentication")
-        # return False
+
 
 
 def cache_tokens(self):
