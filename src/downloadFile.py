@@ -80,7 +80,7 @@ class Downloader:
             self.yt = YouTube(self.url_video,
                               on_progress_callback=self.on_progress,
                               on_complete_callback=self.on_complete,
-                              use_oauth=self.use_oauth, allow_oauth_cache=True
+                              use_oauth=self.use_oauth, allow_oauth_cache=False
                               )
             if self.use_oauth:
                 self.use_oauth = False

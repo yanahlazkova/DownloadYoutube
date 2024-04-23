@@ -3,7 +3,7 @@ from random import choice
 from widgets import widgets
 from customtkinter import CTk, get_appearance_mode
 import re
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
 from data.translate import translations as translate
 import winreg
 
@@ -34,8 +34,8 @@ class Helpers:
         # fg_color = "#2FA572" if appearance_mode == "Dark" else "#3B8ED0"
         if widget == widgets["Combobox_language"]:
             widget.configure(state=("normal" if state_button else "disabled"),
-                                                   button_color=(("#3B8ED0", "#2FA572") if state_button else "gray"),
-                                                   border_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
+                             button_color=(("#3B8ED0", "#2FA572") if state_button else "gray"),
+                             border_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
         else:
             widget.configure(state=("normal" if state_button else "disabled"),
                              fg_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
@@ -122,3 +122,6 @@ class Helpers:
         except FileNotFoundError:
             return None
 
+    @staticmethod
+    def show_info_window():
+        showinfo("Code copied...", "The code will be copied.\nTo insert it press the keys <Ctrl + C>")

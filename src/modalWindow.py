@@ -14,6 +14,7 @@ class ToplevelWindow(CTkToplevel):
     Modal window for custom authentication
     """
     auth_use = None
+
     def __init__(self, verification_url: str = None,
                  user_code: str = None, *args, **kwargs):
         self.icon_edge = PhotoImage(file=".\\data\\Edge.png")
@@ -58,7 +59,13 @@ class ToplevelWindow(CTkToplevel):
                                        )
         self.label_url.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
         self.label_url.bind("<Button-1>", lambda event: self.show_menu(event))
-        # self.label_url.bind("<Button-3>", show_menu)
+
+        self.tooltip = CTkToolTip(self.label_url)
+        self.tooltip.configure(
+            message='Нажмите левую кнопку мыши для выбора браузера\n Код будет скопирован в буфер.\n Для вставки используйте <Ctrl + C>',
+            text_color=("#3B8ED0", "#2FA572"),
+            bg_color=("#E0FFFF")
+        )
 
         self.label_text_info = BaseLabel(master=self.frame,
                                          text="and input code"
@@ -124,10 +131,14 @@ class ToplevelWindow(CTkToplevel):
     def show_menu(self, event):
         menu = Menu(self.label_url, tearoff=0)
 
-        menu.add_command(label="Открыть в Edge", command=lambda: self.open_browser("Edge")) #, image=self.icon_edge, compound=LEFT)
-        menu.add_command(label="Открыть в Chrome", command=lambda:  self.open_browser("Chrome")) #, image=self.icon_chrome, compound=LEFT)
-        menu.add_command(label="Открыть в Firefox", command=lambda:  self.open_browser("Firefox")) #, image=self.icon_firefox, compound=LEFT)
-        menu.add_command(label="Открыть в Opera", command=lambda:  self.open_browser("Opera")) #, image=self.icon_opera, compound=LEFT)
+        menu.add_command(label="Открыть в Edge",
+                         command=lambda: self.open_browser("Edge"))  # , image=self.icon_edge, compound=LEFT)
+        menu.add_command(label="Открыть в Chrome",
+                         command=lambda: self.open_browser("Chrome"))  # , image=self.icon_chrome, compound=LEFT)
+        menu.add_command(label="Открыть в Firefox",
+                         command=lambda: self.open_browser("Firefox"))  # , image=self.icon_firefox, compound=LEFT)
+        menu.add_command(label="Открыть в Opera",
+                         command=lambda: self.open_browser("Opera"))  # , image=self.icon_opera, compound=LEFT)
         menu.add_separator()
         menu.add_command(label="Копировать", command=self.copy_url)
         x, y = event.widget.winfo_pointerxy()
@@ -166,6 +177,7 @@ class ToplevelWindow(CTkToplevel):
         # поиск директории браузера
         browser_dir = Helpers.find_browser_registry(browser)
         print(browser_dir)
+        Helpers.show_info_window()
         if browser_dir:
             webbrowser.register(browser, None,
                                 webbrowser.BackgroundBrowser(browser_dir)
