@@ -1,21 +1,21 @@
 import tkinter as tk
 from tkinter import filedialog
-from customtkinter import CTk, CTkFrame, CTkButton, CTkLabel, CTkProgressBar, CTkComboBox, CTkTextbox, CTkSwitch, \
-    StringVar, set_appearance_mode, CTkInputDialog
-from customtkinter.windows.ctk_toplevel import CTkToplevel
+from customtkinter import CTk, CTkFrame, CTkLabel, CTkTextbox, \
+    StringVar, set_appearance_mode
 from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseLabelText, BaseProgressBar, BaseSwitch
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
-from downloadFile import Downloader
+from downloadFile import DownloaderData
+from downloaderYoutube import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")
 
 
-
 class Interface:
     """ creates interface, place widgets into UI """
+    auth_user = False
     app = None
     app_width = 0
     app_height = 0
@@ -26,6 +26,7 @@ class Interface:
     current_path_saved = "videos"
 
     def __init__(self, title: str, width: int, height: int):
+        self.file_name = None
         self.auth_user = False
         self.app = CTk()
         self.widgets = widgets
@@ -240,6 +241,7 @@ class Interface:
 
         Helpers.center_window(app=self.app, app_width=self.app_width, app_height=self.app_height)
 
+
     def show_placeholder(self):
         """ функция отображает текст placeholder если поле для ввода пустое """
         if self.widgets["Combobox_url"].get() == "":
@@ -255,9 +257,11 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets, self.app, self)
-            self.downloader.start_get_data_thread()
-            # self.show_data_video(data_video)
+            self.downloader_data = DownloaderData(self.widgets, self.current_url, self.current_language)
+            # self.downloader.get_data_video()
+            self.downloader_data.get_video_data()
+            self.file_name = self.downloader_data.get_file_name()
+            print(self.file_name)
 
     def clear_variable(self):
         """ очистка поля ввода """
@@ -289,14 +293,16 @@ class Interface:
 
     def download_video(self):
         """ download video """
+        self.downloader = Downloader(widgets, self.current_url, self.current_language, self.file_name)
+        self.downloader.start_download_thread()
         self.widgets["Progressbar"].set(0)
         self.widgets["Progressbar"].grid(row=1, column=0, padx=20, pady=(0, 20), sticky="ew")
         self.widgets["percentage_label"].configure(text=translation[self.current_language]["Loading_progress"])
         Helpers.set_button_state(self.widgets["button_download"], False)
         # # Запрет смены языка при загрузке
         Helpers.set_button_state(self.widgets["Combobox_language"], False)
+        # self.downloader.show_path_to_file()
 
-        self.downloader.start_download_thread(self.auth_user)
 
     def set_theme(self):
         """ установка светлой / темной темы """
@@ -349,5 +355,4 @@ class Interface:
             self.widgets["path_file"].configure(text=self.current_path_saved)
             print(self.current_path_saved)
 
-    def set_auth_user(self, auth_user):
-        self.auth_user = auth_user
+

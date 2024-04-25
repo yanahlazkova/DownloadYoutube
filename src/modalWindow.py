@@ -62,7 +62,8 @@ class ToplevelWindow(CTkToplevel):
 
         self.tooltip = CTkToolTip(self.label_url)
         self.tooltip.configure(
-            message='Нажмите левую кнопку мыши для выбора браузера\n Код будет скопирован в буфер.\n Для вставки используйте <Ctrl + C>',
+            message='Нажмите левую кнопку мыши для выбора браузера\n ' +
+                    'Код будет скопирован в буфер.\n Для вставки используйте <Ctrl + C>',
             text_color=("#3B8ED0", "#2FA572"),
             bg_color=("#E0FFFF")
         )
