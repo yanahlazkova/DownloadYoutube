@@ -7,7 +7,7 @@ from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
 from downloadFile import DownloaderData
-from downloaderYoutube import Downloader
+from drafts.downloaderYoutube import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")

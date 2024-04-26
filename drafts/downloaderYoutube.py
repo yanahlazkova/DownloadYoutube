@@ -35,7 +35,7 @@ class Downloader:
         # self.auth_user = False  # пользователь аутентифицирован
         self.file_name = file_name  # имя файла для сохранения
         self.is_download = ""
-        self.path_file = "videos"  # путь к папке для загрузки виедо
+        self.path_file = "../src/videos"  # путь к папке для загрузки виедо
         self.current_language = current_lang  # текущий язык приложения
 
     #     def get_video_data(self):
