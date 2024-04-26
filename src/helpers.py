@@ -1,3 +1,4 @@
+
 """ class for helper methods """
 from random import choice
 from widgets import widgets
@@ -34,8 +35,8 @@ class Helpers:
         # fg_color = "#2FA572" if appearance_mode == "Dark" else "#3B8ED0"
         if widget == widgets["Combobox_language"]:
             widget.configure(state=("normal" if state_button else "disabled"),
-                             button_color=(("#3B8ED0", "#2FA572") if state_button else "gray"),
-                             border_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
+                                                   button_color=(("#3B8ED0", "#2FA572") if state_button else "gray"),
+                                                   border_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
         else:
             widget.configure(state=("normal" if state_button else "disabled"),
                              fg_color=(("#3B8ED0", "#2FA572") if state_button else "gray"))
