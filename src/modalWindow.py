@@ -18,10 +18,10 @@ class ToplevelWindow(CTkToplevel):
 
     def __init__(self, verification_url: str = None,
                  user_code: str = None, *args, **kwargs):
-        self.icon_edge = PhotoImage(file=".\\data\\Edge.png")
-        self.icon_chrome = PhotoImage(file=".\\data\\Chrome.png")
-        self.icon_firefox = PhotoImage(file=".\\data\\Firefox.png")
-        self.icon_opera = PhotoImage(file=".\\data\\Opera.png")
+        # self.icon_edge = PhotoImage(file=".\\data\\Edge.png")
+        # self.icon_chrome = PhotoImage(file=".\\data\\Chrome.png")
+        # self.icon_firefox = PhotoImage(file=".\\data\\Firefox.png")
+        # self.icon_opera = PhotoImage(file=".\\data\\Opera.png")
 
         super().__init__(*args, **kwargs)
         self.verification_url = verification_url
@@ -96,13 +96,18 @@ class ToplevelWindow(CTkToplevel):
         self.ok_button = BaseButton(master=self.frame,
                                     width=100,
                                     text='Ok',
-                                    command=self.ok_event)
+                                    # command=self.ok_event
+                                    )
+        self.ok_button.bind("<Button-1>", lambda event: self.ok_event())
+
         self.ok_button.grid(row=6, column=0, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.cancel_button = BaseButton(master=self.frame,
                                         width=100,
                                         text='Cancel',
-                                        command=self.cancel_event)
+                                        # command=self.cancel_event
+                                        )
+        self.cancel_button.bind("<Button-1>", lambda event: self.cancel_event())
         self.cancel_button.grid(row=6, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.after(150,

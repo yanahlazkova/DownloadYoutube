@@ -40,7 +40,7 @@ def fetch_bearer_token(self):
 
     # модальное окно из модуля modalWindow
     auth = ToplevelWindow(verification_url=verification_url, user_code=user_code)
-    auth.my_wait_window()
+    auth.wait_window()
     print(auth.auth_use)
 
 
@@ -69,11 +69,7 @@ def fetch_bearer_token(self):
     self.expires = start_time + response_data['expires_in']
     print(self.expires)
     cache_tokens(self)
-    if auth.auth_use:
-        pass
-    else:
-        print("No custom authentication")
-        # return False
+
 
 
 def cache_tokens(self):

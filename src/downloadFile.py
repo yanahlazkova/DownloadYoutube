@@ -1,11 +1,9 @@
 
-# import io
 from os import path, startfile
 from pytube import YouTube
 from pytube import innertube
 from pytube.exceptions import VideoUnavailable, PytubeError
 from tkinter import END
-from tkinter.messagebox import showinfo, showerror
 from threading import Thread
 from helpers import *
 from PIL import Image
