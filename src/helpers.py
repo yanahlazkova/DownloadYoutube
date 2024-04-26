@@ -3,7 +3,7 @@ from random import choice
 from widgets import widgets
 from customtkinter import CTk, get_appearance_mode
 import re
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
 from data.translate import translations as translate
 import winreg
 
@@ -121,4 +121,8 @@ class Helpers:
                 return value
         except FileNotFoundError:
             return None
+
+    @staticmethod
+    def show_info_window():
+        showinfo("Code copied...", "The code will be copied.\nTo insert it press the keys <Ctrl + C>")
 
