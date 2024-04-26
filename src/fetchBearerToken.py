@@ -42,36 +42,35 @@ def fetch_bearer_token(self):
     auth = ToplevelWindow(verification_url=verification_url, user_code=user_code)
     auth.my_wait_window()
     print(auth.auth_use)
-    if auth.auth_use:
 
 
         # print(f'Please open {verification_url} and input code {user_code}')
         # input('Press enter when you have completed this step.')
 
 
-        data = {
-            'client_id': _client_id,
-            'client_secret': _client_secret,
-            'device_code': response_data['device_code'],
-            'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'
-        }
-        response = request._execute_request(
-            'https://oauth2.googleapis.com/token',
-            'POST',
-            headers={
-                'Content-Type': 'application/json'
-            },
-            data=data
-        )
-        response_data = json.loads(response.read())
+    data = {
+        'client_id': _client_id,
+        'client_secret': _client_secret,
+        'device_code': response_data['device_code'],
+        'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'
+    }
+    response = request._execute_request(
+        'https://oauth2.googleapis.com/token',
+        'POST',
+        headers={
+            'Content-Type': 'application/json'
+        },
+        data=data
+    )
+    response_data = json.loads(response.read())
 
-        self.access_token = response_data['access_token']
-        self.refresh_token = response_data['refresh_token']
-        self.expires = start_time + response_data['expires_in']
-        # self.allow_cache = self.allow_oauth_cache
-        # innertube.InnerTube.cache_tokens(self)
-        cache_tokens(self)
-        # return True
+    self.access_token = response_data['access_token']
+    self.refresh_token = response_data['refresh_token']
+    self.expires = start_time + response_data['expires_in']
+    print(self.expires)
+    cache_tokens(self)
+    if auth.auth_use:
+        pass
     else:
         print("No custom authentication")
         # return False

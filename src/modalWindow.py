@@ -133,13 +133,13 @@ class ToplevelWindow(CTkToplevel):
         menu = Menu(self.label_url, tearoff=0)
 
         menu.add_command(label="Открыть в Edge",
-                         command=lambda: self.open_browser("Edge"))  # , image=self.icon_edge, compound=LEFT)
+                         command=lambda: self.open_browser("Edge"))
         menu.add_command(label="Открыть в Chrome",
-                         command=lambda: self.open_browser("Chrome"))  # , image=self.icon_chrome, compound=LEFT)
+                         command=lambda: self.open_browser("Chrome"))
         menu.add_command(label="Открыть в Firefox",
-                         command=lambda: self.open_browser("Firefox"))  # , image=self.icon_firefox, compound=LEFT)
+                         command=lambda: self.open_browser("Firefox"))
         menu.add_command(label="Открыть в Opera",
-                         command=lambda: self.open_browser("Opera"))  # , image=self.icon_opera, compound=LEFT)
+                         command=lambda: self.open_browser("Opera"))
         menu.add_separator()
         menu.add_command(label="Копировать", command=self.copy_url)
         x, y = event.widget.winfo_pointerxy()

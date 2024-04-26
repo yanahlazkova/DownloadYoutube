@@ -47,8 +47,8 @@ class Downloader:
         video_data = self.get_data_video()
         if self.access_user:
             self.show_data_video(video_data)
-        else:
-            showinfo("Not authenticated", "You need to authenticate")
+        # else:
+        #     showinfo("Not authenticated", "You need to authenticate")
 
     def get_data_video(self):
         """ get and pass to modul interface: title, author, image of video """
@@ -62,11 +62,17 @@ class Downloader:
             self.file_name = self.yt.title
             video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
                           "access": self.access_video}
+            self.current_interface.auth_user = True
+            self.access_user = True
             return video_data
 
         except Exception as e:
-            showerror("Error..", f"YouTube link is invalid\n({e})")
-            # return None
+            # showerror("Error..", f"YouTube link is invalid\n({e})")
+            self.current_interface.auth_user = False
+            self.access_user = False
+            showinfo("Not authentication", "Необходимо пройти аутентификацию")
+            return None
+
     def check_video_availability(self):
         """ Проверка, доступно ли видео для загрузки"""
         print("4 check")
@@ -85,8 +91,8 @@ class Downloader:
             if self.use_oauth:
                 self.use_oauth = False
                 self.current_interface.auth_user = True
-            else:
-                self.stream = self.yt.streams
+            # else:
+            #     self.stream = self.yt.streams
 
             print("Видео доступно.")
             return True
@@ -150,7 +156,7 @@ class Downloader:
 
             self.show_path_to_file()
         except VideoUnavailable as e:
-            showerror("Error...", "Video url is unavaialable" + str(e))
+            showinfo("No download...", "Видео не доступно для загузки\n" + str(e))
         except Exception as e:
             showerror("Error...", f"Failed to upload video: {e}")
 
