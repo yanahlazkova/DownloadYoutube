@@ -3,7 +3,6 @@ import time
 import json
 from modalWindow import ToplevelWindow
 import os
-import pathlib
 
 
 # Local imports
@@ -11,7 +10,7 @@ import pathlib
 # YouTube on TV client secrets
 _client_id = innertube._client_id
 _client_secret = innertube._client_secret
-_cache_dir = pathlib.Path(__file__).parent.resolve() / '__cache__'
+_cache_dir = os.path.join(os.path.expanduser("~"), "__cache__")
 _token_file = os.path.join(_cache_dir, 'tokens.json')
 
 
@@ -67,25 +66,7 @@ def fetch_bearer_token(self):
     self.access_token = response_data['access_token']
     self.refresh_token = response_data['refresh_token']
     self.expires = start_time + response_data['expires_in']
-    print(self.expires)
-    cache_tokens(self)
+    self.cache_tokens()
 
 
-
-def cache_tokens(self):
-    """Cache tokens to file if allowed."""
-    if not self.allow_cache:
-        return
-    print("not allow_cache", self.access_token, self.refresh_token)
-
-    data = {
-        'access_token': self.access_token,
-        'refresh_token': self.refresh_token,
-        'expires': self.expires
-    }
-    if not os.path.exists(_cache_dir):
-        os.mkdir(_cache_dir)
-    with open(_token_file, 'w') as f:
-        print("cache_tokens")
-        json.dump(data, f)
 
