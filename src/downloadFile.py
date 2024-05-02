@@ -17,6 +17,7 @@ innertube.InnerTube.fetch_bearer_token = fetchBearerToken.fetch_bearer_token
 innertube.InnerTube._cache_dir = path.expanduser("~")
 innertube.InnerTube._token_file = path.join(path.expanduser("~"), 'tokens.json')
 
+
 class Downloader:
     """ download video, display video data, display progressbar """
 

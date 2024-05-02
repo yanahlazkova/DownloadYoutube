@@ -2,16 +2,17 @@ from pytube import innertube, request
 import time
 import json
 from modalWindow import ToplevelWindow
-import os
-
+from os import path
+# from pytube.innertube import _cache_dir, _token_file
 
 # Local imports
 
 # YouTube on TV client secrets
 _client_id = innertube._client_id
 _client_secret = innertube._client_secret
-_cache_dir = os.path.join(os.path.expanduser("~"), "__cache__")
-_token_file = os.path.join(_cache_dir, 'tokens.json')
+innertube._cache_dir = path.expanduser('~')
+innertube._token_file = path.join(path.expanduser("~"), 'tokens.json')
+
 
 
 def fetch_bearer_token(self):
