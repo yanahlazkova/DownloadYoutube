@@ -2,8 +2,7 @@ from pytube import innertube, request
 import time
 import json
 from modalWindow import ToplevelWindow
-import os
-import pathlib
+from os import path
 
 user_auth_accepted = None
 
@@ -12,14 +11,15 @@ user_auth_accepted = None
 # YouTube on TV client secrets
 _client_id = innertube._client_id
 _client_secret = innertube._client_secret
-_cache_dir = pathlib.Path(__file__).parent.resolve() / '__cache__'
-_token_file = os.path.join(_cache_dir, 'tokens.json')
+# innertube.InnerTube._cache_dir = path.expanduser("~")
+# innertube.InnerTube._token_file = path.join(innertube.InnerTube._cache_dir, 'tokens.json')
 
 
 def fetch_bearer_token(self):
     """Fetch an OAuth token."""
     global user_auth_accepted
-    print("Я подключаю гугл", user_auth_accepted)
+    print("Я подключаю гугл", innertube.InnerTube._cache_dir)
+    print(innertube.InnerTube._token_file)
 
     # Subtracting 30 seconds is arbitrary to avoid potential time discrepencies
     start_time = int(time.time() - 30)
@@ -63,9 +63,12 @@ def fetch_bearer_token(self):
 
     self.access_token = response_data['access_token']
     self.refresh_token = response_data['refresh_token']
+    print(self.access_token, self.refresh_token)
     self.expires = start_time + response_data['expires_in']
 
     self.cache_tokens()
+
+innertube.InnerTube.fetch_bearer_token = fetch_bearer_token
 
 # def cache_tokens(self):
 #     """Cache tokens to file if allowed."""

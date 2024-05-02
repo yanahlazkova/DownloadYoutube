@@ -12,12 +12,11 @@ from requests import get
 from customtkinter import CTkImage
 from data.translate import translations as translation
 import fetchBearerToken
-from functools import partial
 
-
-# user_auth_accepted = None # пользователь прошел аутентификацию
-# my_fetchBearerToken = partial(fetchBearerToken.fetch_bearer_token, user_auth_accepted)
 InnerTube.fetch_bearer_token = fetchBearerToken.fetch_bearer_token
+
+InnerTube._cache_dir = path.expanduser("~")
+InnerTube._token_file = path.join(path.expanduser("~"), 'tokens.json')
 
 
 
@@ -32,27 +31,23 @@ class Downloader:
         self.widgets = widgets
         self.url_video = url_video
         self.language = language
-        self.user_auth_accepted = fetchBearerToken.user_auth_accepted
+        self.access_user = False # authenticate user
 
     def get_data_video(self):
         print("1")
         """ get data video """
         if self.check_access_data():
-            # user_auth_accepted = fetchBearerToken.user_auth_accepted
-            # print("1-user_auth_accepted", self.user_auth_accepted)
             access_download = self.check_access_download()
-            if self.user_auth_accepted:
-                print("Нажато ОК")
-                try:
-                    self.file_name = self.yt.title
-                    video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
-                                  "access": access_download}
-                    self.show_data_video(video_data)
 
-                except Exception as e:
-                    showerror("Error..", f"YouTube link is invalid\n({e})")
-            else:
-                print("Нажато Cancal")
+            try:
+                self.file_name = self.yt.title
+                video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
+                              "access": access_download}
+                self.show_data_video(video_data)
+
+            # except Exception as e:
+            #     showerror("Error..", f"YouTube link is invalid\n({e})")
+            except:
                 showinfo("No authentication...", "You must authenticate")
 
     def check_access_data(self):
@@ -76,15 +71,6 @@ class Downloader:
             print("Произошла ошибка authentication:", e)
             return False
 
-    def check_auth_user(self):
-        # user_auth_accepted = fetchBearerToken.user_auth_accepted
-        if not self.user_auth_accepted:
-            print("без аутентификации")
-            return False
-        else:
-            print("Пользователь нажал ОК", self.user_auth_accepted)
-            return True
-
     def check_access_download(self):
         """ проверка доступно ли видео для загрузки """
         print("3")
@@ -98,9 +84,10 @@ class Downloader:
             self.widgets["text_info"].grid(row=0, column=0, pady=10, padx=20)
 
             print("Видео недоступно для загрузки", e)
+            self.access_user = False
             return False
-        # except:
-        #     return False
+        except:
+            return False
 
     def show_data_video(self, data_video):
         """Display video data."""
