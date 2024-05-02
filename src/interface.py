@@ -7,11 +7,12 @@ from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseL
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
-from downloadFile import Downloader
+# from downloadFile import Downloader
+from downloadYoutube import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")
-
+user_is_auth = None
 
 
 class Interface:
@@ -255,8 +256,10 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets, self.app)
-            self.downloader.start_get_data_thread()
+            # self.downloader = Downloader(self.widgets, self.app)
+            self.downloader = Downloader(self.widgets, self.current_url, self.current_language)
+
+            self.downloader.get_data_video()
             # self.show_data_video(data_video)
 
     def clear_variable(self):

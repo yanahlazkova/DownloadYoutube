@@ -5,22 +5,15 @@ from CTkToolTip import *
 from classesWidgets import BaseLabel, BaseLabelText, BaseButton, BaseFrame
 import webbrowser
 from helpers import Helpers
-# from selenium.webdriver.common.by import By
-from tkinter import Menu, PhotoImage, LEFT
-
+from tkinter import Menu
 
 class ToplevelWindow(CTkToplevel):
     """
     Modal window for custom authentication
     """
-    auth_use = None
     def __init__(self, verification_url: str = None,
                  user_code: str = None, *args, **kwargs):
-        self.icon_edge = PhotoImage(file=".\\data\\Edge.png")
-        self.icon_chrome = PhotoImage(file=".\\data\\Chrome.png")
-        self.icon_firefox = PhotoImage(file=".\\data\\Firefox.png")
-        self.icon_opera = PhotoImage(file=".\\data\\Opera.png")
-
+        self.auth_user = None
         super().__init__(*args, **kwargs)
         self.verification_url = verification_url
         self.user_code = user_code
@@ -104,19 +97,19 @@ class ToplevelWindow(CTkToplevel):
         self.grid_columnconfigure(0, weight=1)
 
     def ok_event(self, event=None):
-        self.auth_use = True
+        self.auth_user = True
         self.grab_release()
         self.destroy()
         return True
 
     def on_closing(self):
-        self.auth_use = False
+        self.auth_user = False
         self.grab_release()
         self.destroy()
         return False
 
     def cancel_event(self):
-        self.auth_use = False
+        self.auth_user = False
         self.grab_release()
         self.destroy()
         return False
@@ -183,3 +176,5 @@ class ToplevelWindow(CTkToplevel):
     # @staticmethod
     def my_wait_window(self):
         super().wait_window(self)
+        return self.auth_user
+
