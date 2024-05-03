@@ -11,8 +11,8 @@ user_auth_accepted = None
 # YouTube on TV client secrets
 _client_id = innertube._client_id
 _client_secret = innertube._client_secret
-# innertube.InnerTube._cache_dir = path.expanduser("~")
-# innertube.InnerTube._token_file = path.join(innertube.InnerTube._cache_dir, 'tokens.json')
+innertube._cache_dir = path.expanduser("~")
+innertube._token_file = path.join(path.expanduser("~"), 'tokens.json')
 
 
 def fetch_bearer_token(self):

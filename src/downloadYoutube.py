@@ -1,4 +1,7 @@
+import urllib.error
 from os import path, startfile
+
+import requests.exceptions
 from pytube import YouTube
 from pytube.innertube import InnerTube
 from pytube.exceptions import VideoUnavailable, PytubeError
@@ -38,17 +41,17 @@ class Downloader:
         """ get data video """
         if self.check_access_data():
             access_download = self.check_access_download()
+            if self.access_user:
+                # input("Видео доступно")
+                try:
+                    self.file_name = self.yt.title
+                    video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
+                                  "access": access_download}
+                    self.show_data_video(video_data)
 
-            try:
-                self.file_name = self.yt.title
-                video_data = {"title": self.file_name, "author": self.yt.author, "image": self.yt.thumbnail_url,
-                              "access": access_download}
-                self.show_data_video(video_data)
+                except Exception as e:
+                    showerror("Error..", f"YouTube link is invalid\n({e})")
 
-            # except Exception as e:
-            #     showerror("Error..", f"YouTube link is invalid\n({e})")
-            except:
-                showinfo("No authentication...", "You must authenticate")
 
     def check_access_data(self):
         """ проверка доступны ли данные видео """
@@ -77,16 +80,26 @@ class Downloader:
 
         try:
             self.stream = self.yt.streams
+            self.access_user = True
             return True
+        # except Exception as e:
+        except urllib.error.HTTPError as e:
+            if e.code == 428:
+                print("Ошибка 428. Необходима аутентификация")
+                showinfo("No authentication...", "You must authenticate")
+            else:
+                print("Видео недоступно для загрузки", e)
+
+            self.access_user = False if e.code == 428 else True
+
+            return False
         except Exception as e:
             self.widgets["text_info"].configure(text=translation[self.language]["text_info"],
                                                 text_color="red")
             self.widgets["text_info"].grid(row=0, column=0, pady=10, padx=20)
 
-            print("Видео недоступно для загрузки", e)
-            self.access_user = False
-            return False
-        except:
+            self.access_user = True
+            print("Ошибка. Видео не доступно для загрузки", e)
             return False
 
     def show_data_video(self, data_video):

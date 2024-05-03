@@ -53,6 +53,13 @@ class ToplevelWindow(CTkToplevel):
         self.label_url.bind("<Button-1>", lambda event: self.show_menu(event))
         # self.label_url.bind("<Button-3>", show_menu)
 
+        self.tooltip = CTkToolTip(self.label_url)
+        self.tooltip.configure(
+            message='Нажмите левую кнопку мыши для выбора браузера\n Код будет скопирован в буфер.\n Для вставки используйте <Ctrl + C>',
+            text_color=("#3B8ED0", "#2FA572"),
+            bg_color=("#E0FFFF")
+        )
+
         self.label_text_info = BaseLabel(master=self.frame,
                                          text="and input code"
                                          )
@@ -80,13 +87,18 @@ class ToplevelWindow(CTkToplevel):
         self.ok_button = BaseButton(master=self.frame,
                                     width=100,
                                     text='Ok',
-                                    command=self.ok_event)
+                                    # command=self.ok_event
+                                    )
+        self.ok_button.bind("<Button-1>", lambda event: self.ok_event())
+
         self.ok_button.grid(row=6, column=0, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.cancel_button = BaseButton(master=self.frame,
                                         width=100,
                                         text='Cancel',
-                                        command=self.cancel_event)
+                                        # command=self.cancel_event
+                                        )
+        self.cancel_button.bind("<Button-1>", lambda event: self.cancel_event())
         self.cancel_button.grid(row=6, column=1, columnspan=1, padx=(10, 10), pady=(0, 10), sticky="ew")
 
         self.after(150,
@@ -158,7 +170,7 @@ class ToplevelWindow(CTkToplevel):
         print("Auth google in", browser)
         # поиск директории браузера
         browser_dir = Helpers.find_browser_registry(browser)
-        print(browser_dir)
+        Helpers.show_info_window()
         if browser_dir:
             webbrowser.register(browser, None,
                                 webbrowser.BackgroundBrowser(browser_dir)
