@@ -5,6 +5,7 @@ from modalWindow import ToplevelWindow
 from os import path
 # from pytube.innertube import _cache_dir, _token_file
 
+
 # Local imports
 
 # YouTube on TV client secrets
@@ -14,11 +15,11 @@ innertube._cache_dir = path.expanduser('~')
 innertube._token_file = path.join(path.expanduser("~"), 'tokens.json')
 
 
-
 def fetch_bearer_token(self):
     """Fetch an OAuth token."""
+    print("Я подключаю гугл", innertube.InnerTube._cache_dir)
+    print(innertube.InnerTube._token_file)
 
-    print("Я подключаю гугл")
     # Subtracting 30 seconds is arbitrary to avoid potential time discrepencies
     start_time = int(time.time() - 30)
     data = {
@@ -41,12 +42,6 @@ def fetch_bearer_token(self):
     # модальное окно из модуля modalWindow
     auth = ToplevelWindow(verification_url=verification_url, user_code=user_code)
     auth.wait_window()
-    print(auth.auth_use)
-
-
-        # print(f'Please open {verification_url} and input code {user_code}')
-        # input('Press enter when you have completed this step.')
-
 
     data = {
         'client_id': _client_id,
@@ -70,4 +65,21 @@ def fetch_bearer_token(self):
     self.cache_tokens()
 
 
+# innertube.InnerTube.fetch_bearer_token = fetch_bearer_token
 
+# def cache_tokens(self):
+#     """Cache tokens to file if allowed."""
+#     if not self.allow_cache:
+#         return
+#     print("not allow_cache", self.access_token, self.refresh_token)
+#
+#     data = {
+#         'access_token': self.access_token,
+#         'refresh_token': self.refresh_token,
+#         'expires': self.expires
+#     }
+#     if not os.path.exists(_cache_dir):
+#         os.mkdir(_cache_dir)
+#     with open(_token_file, 'w') as f:
+#         print("cache_tokens")
+#         json.dump(data, f)

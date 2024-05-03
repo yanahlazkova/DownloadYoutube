@@ -8,11 +8,12 @@ from classesWidgets import BaseFrame, BaseLabel, BaseButton, BaseComboBox, BaseL
 from helpers import Helpers
 from widgets import widgets
 from data.listUrls import list_urls
-from downloadFile import Downloader
+# from downloadFile import Downloader
+from downloadYoutube import Downloader
 from data.translate import translations as translation
 
 set_appearance_mode("Dark")
-
+user_is_auth = None
 
 
 class Interface:
@@ -27,7 +28,7 @@ class Interface:
     current_path_saved = "videos"
 
     def __init__(self, title: str, width: int, height: int):
-        self.auth_user = False
+        # self.auth_user = False
         self.app = CTk()
         self.widgets = widgets
         self.app.title(title)
@@ -256,8 +257,10 @@ class Interface:
 
         # Проверка указанной ссылки и вывод данных о видео
         if Helpers.check_link(self.current_url, self.placeholder):
-            self.downloader = Downloader(self.widgets, self.app, self)
-            self.downloader.start_get_data_thread()
+            # self.downloader = Downloader(self.widgets, self.app)
+            self.downloader = Downloader(self.widgets, self.current_url, self.current_language)
+
+            self.downloader.get_data_video()
             # self.show_data_video(data_video)
 
     def clear_variable(self):
@@ -297,7 +300,7 @@ class Interface:
         # # Запрет смены языка при загрузке
         Helpers.set_button_state(self.widgets["Combobox_language"], False)
 
-        self.downloader.start_download_thread(self.auth_user)
+        self.downloader.start_download_thread()
 
     def set_theme(self):
         """ установка светлой / темной темы """
